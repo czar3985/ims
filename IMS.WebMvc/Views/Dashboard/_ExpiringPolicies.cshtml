@@ -1,0 +1,36 @@
+﻿@model IEnumerable<IMS.WebMvc.Models.ExpiringPoliciesModel>
+
+<table class="table data-table" id="expiring-policies-table">
+    <thead>
+        <tr>
+            @*<th></th>*@
+            <th>Company</th>
+            <th>Type</th>
+            <th>Policy No.</th>
+            <th>Expiry Date</th>
+            <th>Insured</th>
+            <th>Renewal Notice</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                @*<td><input type="checkbox" name="selectedPolicy"></td>*@
+                <td>@Html.DisplayFor(modelItem => item.CompanyName)</td>
+                <td>@Html.DisplayFor(modelItem => item.PolicyTypeName)</td>
+                <td>@Html.DisplayFor(modelItem => item.PolicyNumber)</td>
+                <td>
+                    @item.ExpiryDate.ToString("MM/dd/yyyy")
+                </td>
+                <td>@Html.DisplayFor(modelItem => item.ClientName)</td>
+                <td>
+                    @Html.ActionLink("Generate PDF", "RenewalNoticeAsPdf", new { id = item.Id, clientName = item.ClientName }, new { @class="btn btn-default btn-xs"})
+                    <button type="button" class="btn btn-default btn-xs" ng-click="emailRenewalNotice(@item.Id)">
+                        Send E-mail
+                    </button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

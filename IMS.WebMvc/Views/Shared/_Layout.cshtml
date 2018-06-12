@@ -1,0 +1,131 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - IMS</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    
+    <link href="https://fonts.googleapis.com/css?family=Righteous|Roboto:100,400,900" rel="stylesheet">
+    
+    @*FAVICON*@
+    <link rel="apple-touch-icon" sizes="57x57" href="~/Content/Images/favicon/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="~/Content/Images/favicon/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="~/Content/Images/favicon/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="~/Content/Images/favicon/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="~/Content/Images/favicon/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="~/Content/Images/favicon/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="~/Content/Images/favicon/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="~/Content/Images/favicon/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="~/Content/Images/favicon/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="~/Content/Images/favicon/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="~/Content/Images/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="~/Content/Images/favicon/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="~/Content/Images/favicon/favicon-16x16.png">
+
+    <link rel="manifest" href="/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+    <link href="~/Content/libs/bootstrap/bootstrap-datepicker.min.css" rel="stylesheet" />
+    <link href="~/Content/DataTables/css/jquery.dataTables.min.css" rel="stylesheet" />
+    <link href="~/Content/DataTables/css/buttons.dataTables.min.css" rel="stylesheet" />
+    <link href="~/Content/font-awesome.min.css" rel="stylesheet" />
+    <link href="~/Content/libs/toastr/toastr.min.css" rel="stylesheet" />
+    <link href="~/Content/Stylesheets/Layout.css" rel="stylesheet" />
+
+    @RenderSection("styles", required: false)
+</head>
+<body ng-app="imsApp" ng-cloak >
+    <div id="wrapper">
+        <div class="container">
+            <div class="row" id="main-header">
+                <div id="login">
+                    @Html.Partial("_LoginPartial")
+                </div>
+                <h1>
+                    <a href="/" class="main-logo">
+                        <span class="go-big-logo">Go.BIG</span>
+                        <span class="ims-name"> IMS</span>
+                    </a>
+                </h1>
+            </div>
+            <nav id="main-nav" class="navbar navbar-default">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                </div>
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                        <li id="menu-dashboard">@Html.ActionLink("Dashboard", "Index", "Dashboard")</li>
+                        <li id="menu-client">@Html.ActionLink("Clients", "Index", "Client")</li>
+                        <li id="menu-policy">@Html.ActionLink("Policies", "Index", "Policy")</li>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li id="menu-default-rebate">@Html.ActionLink("Default Rebates", "Index", "DefaultRebate")</li>
+                        }
+                        <li id="menu-invoice">@Html.ActionLink("Invoices", "Index", "Invoice")</li>
+                        <li id="menu-soa">@Html.ActionLink("SOA", "Index", "SOA")</li>
+                        <li id="menu-claim">@Html.ActionLink("Claims", "Index", "Claim")</li>
+                        @*@if (User.IsInRole("Admin"))
+                        {*@
+                            <li id="menu-report">@Html.ActionLink("Reports", "Index", "Report")</li>
+                        @*  *@}
+                        <li id="menu-form">@Html.ActionLink("Forms", "Index", "Form")</li>
+                        <li id="menu-directory">@Html.ActionLink("Company Directory", "Index", "Directory")</li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+        <div class="container body-content">
+            @RenderBody()
+        </div>
+        <div id="push"></div>
+    </div>
+    <footer>
+        <p>Copyright &copy; @DateTime.Now.Year. Gobig Software Solutions</p>
+    </footer>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    <script src="~/Scripts/libs/bootstrap/bootstrap-datepicker.min.js"></script>
+    <script src="~/Scripts/libs/DataTables/jquery.dataTables.js"></script>
+    <script src="~/Scripts/libs/DataTables/dataTables.buttons.js"></script>
+    <script src="~/Scripts/libs/DataTables/buttons.flash.min.js"></script>
+    <script src="~/Scripts/libs/JsZip/jszip.min.js"></script>
+    <script src="~/Scripts/pdfmake/pdfmake.min.js"></script>
+    <script src="~/Scripts/pdfmake/vfs_fonts.js"></script>
+    <script src="~/Scripts/libs/DataTables/buttons.html5.js"></script>
+    <script src="~/Scripts/libs/DataTables/buttons.print.min.js"></script>
+    <script src="~/Scripts/libs/toastr/toastr.min.js"></script>
+    <script src="~/Scripts/libs/bootbox/bootbox.min.js"></script>
+
+    <script src="~/Scripts/libs/AngularJs/angular.js"></script>
+    <script src="~/Scripts/libs/AngularJs/angular-resource.min.js"></script>
+    <script src="~/Scripts/libs/DateTime/datetime.js"></script>
+    <script src="~/Scripts/app/imsApp.js"></script>
+    <script src="~/Scripts/app/helpers/util.js"></script>
+    <script src="~/Scripts/libs/excelExport/jquery.battatech.excelexport.js"></script>
+
+    @RenderSection("scripts", required: false)
+    <script>
+        $(document).ready(function () {
+            $('.data-table').DataTable(
+                {
+                    dom: 'Blfrtip',
+                    buttons: [
+                        'copy', 'csv', 'excel', 'pdf'
+                    ]
+                }
+                );
+
+            $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+                $(".dataTables_empty").attr("colspan", "20");
+            });
+        });
+    </script>
+</body>
+</html>

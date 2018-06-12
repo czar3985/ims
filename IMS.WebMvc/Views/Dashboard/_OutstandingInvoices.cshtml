@@ -1,0 +1,36 @@
+﻿@model IEnumerable<IMS.WebMvc.Models.OutstandingInvoicesModel>
+
+    <table class="table data-table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Invoice No.</th>
+                <th>Insured</th>
+                <th>Policy No.</th>
+                <th>Sum Insured</th>
+                <th>Total Amt Due</th>
+                <th>Status</th>
+                <th>Due Date</th>
+                <th>Remarks</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model) {
+            <tr>
+                <td>
+                    @item.IssueDate.ToString("MM/dd/yyyy")
+                </td>
+                <td>@Html.DisplayFor(modelItem => item.InvoiceNumber)</td>
+                <td>@Html.DisplayFor(modelItem => item.ClientName)</td>
+                <td>@Html.DisplayFor(modelItem => item.PolicyNumber)</td>
+                <td class="number">@Html.DisplayFor(modelItem => item.SumInsured)</td>
+                <td class="number">@Html.DisplayFor(modelItem => item.TotalAmountDue)</td>
+                <td>@Html.DisplayFor(modelItem => item.StatusName)</td>
+                <td>
+                    @item.DueDate.ToString("MM/dd/yyyy")
+                </td>
+                <td>@Html.DisplayFor(modelItem => item.Remarks)</td>
+            </tr>
+            }
+        </tbody>
+    </table>

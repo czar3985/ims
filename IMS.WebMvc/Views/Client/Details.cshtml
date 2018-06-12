@@ -1,0 +1,237 @@
+﻿@using Newtonsoft.Json;
+@model IMS.WebMvc.Models.ClientDetailModel
+@{
+    ViewBag.Title = "Details";
+}
+
+<div id="client-details-html" ng-controller="clientsDetailCtrl" ng-init="ctrlInit(@JsonConvert.SerializeObject(@Model))">
+    @Html.Partial("_AddOffer", Model)
+
+    <div class="details-box form-horizontal">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    @Html.LabelFor(m => Model.ClientName, new { @class = "col-xs-4 control-label" })
+                    <div class="col-xs-8 detail-value">@Model.ClientName</div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    @Html.LabelFor(m => Model.TotalBusiness, new { @class = "col-xs-4 control-label" })
+                    <div class="col-xs-8 detail-value">@string.Format("{0:N}", Model.TotalBusiness)</div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    @Html.LabelFor(m => Model.Address, new { @class = "col-xs-4 control-label" })
+                    <div class="col-xs-8 detail-value">@Model.Address</div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    @Html.LabelFor(m => Model.TotalClaim, new { @class = "col-xs-4 control-label" })
+                    <div class="col-xs-8 detail-value">@string.Format("{0:N}", Model.TotalClaim)</div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    @Html.LabelFor(m => Model.Email, new { @class = "col-xs-4 control-label" })
+                    <div class="col-xs-8 detail-value">@Model.Email</div>
+                </div>
+            </div>
+            @*@if (User.IsInRole("Admin"))
+            {
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        @Html.LabelFor(m => Model.Rebate, new { @class = "col-xs-4 control-label" })
+                        <div class="col-xs-8 detail-value">@Model.Rebate</div>
+                    </div>
+                </div>
+            }*@
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    @Html.LabelFor(m => Model.ContactNumber, new { @class = "col-xs-4 control-label" })
+                    <div class="col-xs-8 detail-value">@Model.ContactNumber</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
+
+    <div class="row page-action-top">
+        <div class="col-sm-6 left-pane">
+            <label>Show:</label>
+            <select ng-model="showEntriesVal" ng-change="showEntriesChanged()">
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+            </select>
+            <label>entries</label>
+            <a href='@Url.Action("Create", "Policy", new { ClientId = @Model.Id, returnUrl = "/Client/Details/" + Model.Id })' class="btn btn-default btn-sm">
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"> </span>
+                Policy
+            </a>
+            <button type="button" class="btn btn-default btn-sm" aria-label="Offer" data-toggle="modal" data-target="#add-offer-modal">
+                <span class="glyphicon glyphicon-upload" aria-hidden="true"></span>
+                Upload New Offer
+            </button>
+        </div>
+        <div class="col-sm-6 right-pane">
+            <button type="button" class="btn btn-default btn-xs" id="dowload-button" aria-label="Download" ng-click="download()">
+                <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+            </button>
+            <input type="search" ng-model="searchText" ng-change="searchChanged()" placeholder="Search..." />
+        </div>
+    </div>
+
+    <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
+        <li class="active"><a href="#policies" data-toggle="tab" ng-click="tabClick('policies')">Policies</a></li>
+        <li><a href="#claims" data-toggle="tab" ng-click="tabClick('claims')">Claims</a></li>
+        <li><a href="#offers" data-toggle="tab" ng-click="tabClick('offers')">Offers</a></li>
+    </ul>
+
+    <div id="dashboard-tabs" class="tab-content">
+        <div class="tab-pane active" id="policies">
+            <table class="table data-table">
+                <thead>
+                    <tr>
+                        <th>Company</th>
+                        <th>Policy No.</th>
+                        <th>Status</th>
+                        <th>Expiry</th>
+                        <th>Policy Type</th>
+                        <th>Sum Insured</th>
+                        <th>Rate</th>
+                        <th>Premium</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.ClientPoliciesList)
+                    {
+                        <tr>
+                            <td>@Html.DisplayFor(modelItem => item.CompanyName)</td>
+                            <td>@Html.DisplayFor(modelItem => item.PolicyNumber)</td>
+                            <td>@Html.DisplayFor(modelItem => item.StatusName)</td>
+                            <td>
+                                @*@Html.DisplayFor(modelItem => item.ExpiryDate)*@
+                                @item.ExpiryDate.ToString("MM/dd/yyyy")
+                            </td>
+                            <td>@Html.DisplayFor(modelItem => item.PolicyTypeName)</td>
+                            <td class="number">@Html.DisplayFor(modelItem => item.SumInsured)</td>
+                            <td class="number">@Html.DisplayFor(modelItem => item.Rate)</td>
+                            <td class="number">@Html.DisplayFor(modelItem => item.Premium)</td>
+                            <td>
+                                @if (item.StatusName.ToLower() == "active")
+                                {
+                                    <a href='@Url.Action("Edit", "Policy",new { id = item.Id, returnUrl = Url.Action("Details", "Client", new { id = Model.Id}) })'
+                                       class="btn btn-default btn-xs" title="Edit">
+                                        <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                                    </a>
+                                }
+                                else
+                                {
+                                    <button class="btn btn-default btn-xs" title="Edit" disabled>
+                                        <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                                    </button>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="tab-pane" id="claims">
+            <table class="table data-table">
+                <thead>
+                    <tr>
+                        <th>Policy No.</th>
+                        <th>Policy Type</th>
+                        <th>Date</th>
+                        <th>Amount</th>
+                        <th>Reference</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.ClientClaimsList)
+                    {
+                        <tr>
+                            <td>@Html.DisplayFor(modelItem => item.PolicyNumber)</td>
+                            <td>@Html.DisplayFor(modelItem => item.PolicyTypeName)</td>
+                            <td>
+                                @*@Html.DisplayFor(modelItem => item.ClaimDate)*@
+                                @item.ClaimDate.ToString("MM/dd/yyyy")
+                            </td>
+                            <td class="number">@Html.DisplayFor(modelItem => item.ClaimAmount)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Reference)</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="tab-pane" id="offers">
+            <table class="table data-table">
+                <thead>
+                    <tr>
+                        <th>Document Name</th>
+                        <th>File</th>
+                        <th>Status</th>
+                        <th>Remarks</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.ClientOffersList)
+                    {
+                        <tr>
+                            <td>@Html.DisplayFor(modelItem => item.DocumentName)</td>
+                            <td>@Html.DisplayFor(modelItem => item.FileName)</td>
+                            <td>@Html.DisplayFor(modelItem => item.StatusName)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Remarks)</td>
+                            <td>
+                                @*<a href='@Url.Action("Edit", "Policy",new { id = item.Id, returnUrl = Url.Action("Details", "Client", new { id = Model.Id}) })'
+                                   class="btn btn-default btn-xs" title="Edit">
+                                    <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                                </a>
+                                <a href='@Url.Content(item.FileUrl)' target="_blank" class="btn btn-default btn-xs" aria-label="Download" title="Download" download>
+                                    <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+                                </a>
+                                <button type="button" class="btn btn-default btn-xs" aria-label="E-mail" title="E-mail" ng-click="emailForm(@item.Id)" data-toggle="modal" data-target="#email-form-modal">
+                                    <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>
+                                </button>
+                                <button type="button" class="btn btn-default btn-xs" aria-label="Delete" title="Delete" ng-click="deleteForm(@item.Id)" data-toggle="modal" data-target="#confirm-delete-modal">
+                                    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                                </button>*@
+                                <a href=''
+                                   class="btn btn-default btn-xs" title="Edit">
+                                    <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                                </a>
+                                <a href='' target="_blank" class="btn btn-default btn-xs" aria-label="Download" title="Download" download>
+                                    <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+                                </a>
+                                <button type="button" class="btn btn-default btn-xs" aria-label="E-mail" title="E-mail" data-toggle="modal">
+                                    <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>
+                                </button>
+                                <button type="button" class="btn btn-default btn-xs" aria-label="Delete" title="Delete" data-toggle="modal">
+                                    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script src="~/Scripts/app/clients/clientsDetailCtrl.js"></script>
+    @Scripts.Render("~/bundles/jqueryval")
+}

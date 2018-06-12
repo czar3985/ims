@@ -1,0 +1,188 @@
+﻿@model IMS.WebMvc.Models.InvoiceItemViewModel
+
+<div>
+    <div class="details-box form-horizontal">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    @Html.LabelFor(m => Model.ClientId, new { @class = "col-xs-4 control-label" })
+                    <div class="col-xs-8 detail-value">@Model.ClientName</div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    @Html.LabelFor(m => Model.IssueDate, new { @class = "col-xs-4 control-label" })
+                    <div class="col-xs-8 detail-value">@Model.IssueDate.ToString("MM/dd/yyyy")</div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    @Html.LabelFor(m => Model.AccountNumber, new { @class = "col-xs-4 control-label" })
+                    <div class="col-xs-8 detail-value">@Model.AccountNumber</div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    @Html.LabelFor(m => Model.InvoiceNumber, new { @class = "col-xs-4 control-label" })
+                    <div class="col-xs-8 detail-value">@Model.InvoiceNumber</div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    @Html.LabelFor(m => Model.PolicyNumber, new { @class = "col-xs-4 control-label" })
+                    <div class="col-xs-8 detail-value">@Model.PolicyNumber</div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    @Html.LabelFor(m => Model.TotalAmountDue, new { @class = "col-xs-4 control-label" })
+                    <div class="col-xs-8 detail-value">@string.Format("{0:N}", Model.TotalAmountDue)</div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    @Html.LabelFor(m => Model.CompanyName, new { @class = "col-xs-4 control-label" })
+                    <div class="col-xs-8 detail-value">@Model.CompanyName</div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    @Html.LabelFor(m => Model.StatusId, new { @class = "col-xs-4 control-label" })
+                    <div class="col-xs-8 detail-value">@Model.StatusName</div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    @Html.LabelFor(m => Model.EndorsementNumber, new { @class = "col-xs-4 control-label" })
+                    <div class="col-xs-8 detail-value">@Model.EndorsementNumber</div>
+                </div>
+            </div>
+            @if (Model.StatusName.ToLower() == "paid")
+            {
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        @Html.LabelFor(m => Model.PaidDate, new { @class = "col-xs-4 control-label" })
+                        <div class="col-xs-8 detail-value">@Model.PaidDate.ToString("MM/dd/yyyy")</div>
+                    </div>
+                </div>
+            }
+            else {
+                if (User.IsInRole("Admin"))
+                {
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            @Html.LabelFor(m => Model.Rebate, new { @class = "col-xs-4 control-label" })
+                            <div class="col-xs-8 detail-value">
+                                @String.Format("{0:F6}", Model.Rebate)
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                @if ((Model.StatusName.ToLower() == "paid") && (User.IsInRole("Admin")))
+                {
+                    <div class="form-group">
+                        @Html.LabelFor(m => Model.Rebate, new { @class = "col-xs-4 control-label" })
+                        <div class="col-xs-8 detail-value">
+                            @String.Format("{0:F6}", Model.Rebate)
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="form-group">
+                        @Html.LabelFor(m => Model.Remarks, new { @class = "col-xs-4 control-label" })
+                        <div class="col-xs-8 detail-value">@Model.Remarks</div>
+                    </div>
+                }
+            </div>
+            <div class="col-sm-6">
+                @if (Model.StatusName.ToLower() == "paid")
+                {
+                    <div class="form-group">
+                        @Html.LabelFor(m => Model.AmountPaid, new { @class = "col-xs-4 control-label" })
+                        <div class="col-xs-8 detail-value">@string.Format("{0:N}", Model.AmountPaid)</div>
+                    </div>
+                }
+            </div>
+        </div>
+        @if (Model.StatusName.ToLower() == "paid")
+        {
+            <div class="row">
+                <div class="col-sm-6">
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <div class="form-group">
+                            @Html.LabelFor(m => Model.Remarks, new { @class = "col-xs-4 control-label" })
+                            <div class="col-xs-8 detail-value">@Model.Remarks</div>
+                        </div>
+                    }
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        @Html.LabelFor(m => Model.HasEWT, new { @class = "col-xs-4 control-label" })
+                        @if (Model.HasEWT)
+                        {
+                            <div class="col-xs-8 detail-value">Yes</div>
+                        }
+                        else 
+                        {
+                            <div class="col-xs-8 detail-value">No</div>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        @Html.LabelFor(m => Model.ORNumber, new { @class = "col-xs-4 control-label" })
+                        <div class="col-xs-8 detail-value">@Model.ORNumber</div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    <br />
+    <table class="table table-with-input" id="invoice-details-table">
+        <thead>
+            <tr><th colspan="3">Particulars</th></tr>
+            <tr>
+                <th>Item</th>
+                <th>Amount</th>
+                <th>Remarks</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Particulars)
+            {
+                <tr>
+                    <td>@item.ParticularTypeName</td>
+                    <td class="number">
+                        @string.Format("{0:N}", item.ParticularAmount)
+                    </td>
+                    <td>@item.Remarks</td>
+                </tr>
+            }
+            <tr>
+                <td>@Html.LabelFor(m => Model.TotalAmountDue, htmlAttributes: new { @class = "control-label" })</td>
+                <td class="number">
+                    @string.Format("{0:N}", Model.TotalAmountDue)
+                </td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+</div>

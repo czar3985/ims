@@ -1,0 +1,23 @@
+﻿@model IMS.WebMvc.Models.SoaModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GenerateSoaPdfView - IMS</title>
+    @Styles.Render("~/Content/css")
+    <link href="~/Content/Stylesheets/Layout.css" rel="stylesheet" />
+    <link href="~/Content/Stylesheets/Soa.css" rel="stylesheet" />
+</head>
+<body>
+    <div id="soa-details-html">
+        @Html.Partial("_GenerateSoa")
+    </div>
+    <br />
+</body>
+</html>

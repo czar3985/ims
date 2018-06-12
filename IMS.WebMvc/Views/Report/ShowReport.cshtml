@@ -1,0 +1,42 @@
+﻿@model IMS.WebMvc.Models.ReportIndexModel
+@{
+    ViewBag.Title = "ShowReport";
+}
+
+<div id="report-show-html" ng-controller="reportsShowReportCtrl">
+    @if (Model.IsMonthlyProdType)
+    {
+        @Html.Partial("_MonthlyProductionReport", Model)
+    }
+    else
+    {
+        if (Model.PolicyTypeName.ToUpper() == "ACCIDENT")
+        {
+            @Html.Partial("_AccidentRegister", Model)
+        }
+
+        if (Model.PolicyTypeName.ToUpper() == "BONDS")
+        {
+            @Html.Partial("_BondsRegister", Model)
+        }
+
+        if (Model.PolicyTypeName.ToUpper() == "FIRE")
+        {
+            @Html.Partial("_FireRegister", Model)
+        }
+
+        if (Model.PolicyTypeName.ToUpper() == "MARINE")
+        {
+            @Html.Partial("_MarineRegister", Model)
+        }
+    }
+</div>
+
+@section styles {
+    <link href="~/Content/Stylesheets/Reports.css" rel="stylesheet" />
+}
+
+@section scripts {
+    
+    <script src="~/Scripts/app/reports/reportsShowReportCtrl.js"></script>
+}

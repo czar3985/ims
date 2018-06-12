@@ -1,0 +1,27 @@
+﻿@model IMS.WebMvc.Models.SoaModel
+@{
+    ViewBag.Title = "Details";
+}
+
+<div id="soa-details-html">
+    <a href='@Url.Action("GeneratePdf", "Soa", new { id = Model.Id, clientName = Model.ClientName })'
+       class="btn btn-default" title="Generate PDF">
+        <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+    </a>
+
+    @Html.Partial("_GenerateSoa")
+</div>
+<br />
+
+@section styles {
+    <link href="~/Content/Stylesheets/Soa.css" rel="stylesheet" />
+}
+
+@section scripts {
+    @*<script src="~/Scripts/app/soa/soaIndexCtrl.js"></script>*@
+    <script>
+        $(document).ready(function () {
+            $("#menu-soa").addClass('active');
+        });
+    </script>
+}

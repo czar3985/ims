@@ -1,0 +1,20 @@
+﻿@model IMS.WebMvc.Models.InvoiceItemViewModel
+@{
+    ViewBag.Title = "Details";
+}
+
+<div id="invoice-details-html">
+
+    @Html.Partial("_Details", Model)
+
+</div>
+
+@section styles {
+    <link href="~/Content/Stylesheets/Invoices.css" rel="stylesheet" />
+}
+
+@section scripts {
+    <script>
+        $("#menu-invoice").addClass('active');
+    </script>
+}

@@ -1,0 +1,22 @@
+﻿@model IMS.WebMvc.Models.InvoiceItemViewModel
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>SaveInvoicePdfView</title>
+    @Styles.Render("~/Content/css")
+    <link href="~/Content/Stylesheets/Layout.css" rel="stylesheet" />
+    <link href="~/Content/Stylesheets/Invoices.css" rel="stylesheet" />
+    <link href="~/Content/Stylesheets/Soa.css" rel="stylesheet" />
+</head>
+<body class="container" id="invoice-details-html">
+    @Html.Partial("~/Views/Shared/_CompanyHeader.cshtml")
+    @Html.Partial("_Details", Model)
+</body>
+</html>

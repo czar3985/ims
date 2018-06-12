@@ -1,0 +1,66 @@
+﻿@model IMS.WebMvc.Models.DashboardModel
+
+@{
+    ViewBag.Title = "Dashboard";
+}
+
+<div id="dashboard-index-html" ng-controller="dashboardIndexCtrl">
+    @Html.Partial("_RenewalNotice")
+
+    <div class="row page-action-top">
+        <div class="col-sm-6 left-pane">
+            <label>Show:</label>
+            <select ng-model="showEntriesVal" ng-change="showEntriesChanged()">
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+            </select>
+            <label>entries</label>
+        </div>
+        <div class="col-sm-6 right-pane">
+            <button type="button" class="btn btn-default btn-xs" id="dowload-button" aria-label="Download" ng-click="download()">
+                <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+            </button>
+            <input type="search" ng-model="searchText" ng-change="searchChanged()" placeholder="Search..."/>
+        </div>
+    </div>
+
+    <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
+        <li class="active" ng-click="tabClick(0)">
+            <a href="#expiring-policies" data-toggle="tab">Expiring Policies</a>
+        </li>
+        <li ng-click="tabClick(1)">
+            <a href="#outstanding-invoices" data-toggle="tab">Outstanding Invoices</a>
+        </li>
+        <li id="soa-tab" ng-click="tabClick(2)">
+            <a href="#soa" data-toggle="tab">SOA</a>
+        </li>
+    </ul>
+
+    <div class="tab-content">
+        <div class="tab-pane active" id="expiring-policies">
+            @Html.Partial("_ExpiringPolicies", Model.ExpiringPolicies)
+        </div>
+        <div class="tab-pane" id="outstanding-invoices">
+            @Html.Partial("_OutstandingInvoices", Model.OutstandingInvoices)
+        </div>
+        <div class="tab-pane" id="soa">
+            @Html.Partial("_Soa", Model.Soas)
+        </div>
+    </div>
+</div>
+
+@section styles {
+    <link href="~/Content/Stylesheets/DashBoard.css" rel="stylesheet" />
+}
+
+@section scripts {
+    <script src="~/Scripts/app/dashboard/dashboardIndexCtrl.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#menu-dashboard").addClass('active');
+        });
+    </script>
+}
+

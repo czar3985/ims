@@ -1,0 +1,10 @@
+$tf/
+.vs/
+packages/
+IMS.Data/bin/
+IMS.Data/obj/
+IMS.Entity/bin/
+IMS.Entity/obj/
+IMS.WebMvc/bin/
+IMS.WebMvc/obj/
+IMS.WebMvc/Properties/PublishProfiles/

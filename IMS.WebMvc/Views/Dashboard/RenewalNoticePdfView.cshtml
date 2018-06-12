@@ -1,0 +1,46 @@
+﻿@model IMS.WebMvc.Models.ExpiringPoliciesModel
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>RenewalNoticePdfView</title>
+    <link href="~/Content/Stylesheets/DashBoard.css" rel="stylesheet" />
+</head>
+<body id="renewal-notice">
+    <div id="renewal-notice-header">
+        <h3>MANILA OVERSEAS COMMERCIAL, INC.</h3>
+        <p>
+            201 Capt. Roja St., Addition Hills<br />
+            San Juan City<br />
+            Email: moci310@gmail.com<br />
+            Tels. 570-4578; 570-4579 & 570-4580; 463-7871<br />
+            Fax No. 570-5191
+        </p>
+    </div>
+    <div id="renewal-notice-body">
+        @DateTime.Now.ToString("MMMM dd, yyyy")
+        <br /><br />
+        Dear @Model.ClientName,
+        <br /><br />
+        <strong>Re: REMINDER FOR RENEWAL OF POLICY</strong>
+        <p>
+            Policy Number: @Model.PolicyNumber<br />
+            Policy Type: @Model.PolicyTypeName<br />
+            Company: @Model.CompanyName
+        </p>
+        <p>We wish to remind you that your policy expires on @Model.ExpiryDate.ToString("MMMM dd").</p>
+        <p>Please let us know whether you would like to renew the policy under the same terms.</p>
+        <p>Thank you.</p>
+        <br />
+        <div id="renewal-notice-signature">
+            MANILA OVERSEAS COMMERCIAL, INC.
+        </div>
+    </div>
+</body>
+</html>

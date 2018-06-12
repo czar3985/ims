@@ -1,0 +1,19 @@
+﻿@using Newtonsoft.Json;
+@model IMS.WebMvc.Models.InvoiceItemViewModel
+@{
+    ViewBag.Title = "Create";
+}
+
+<div ng-controller="invoicesCreateCtrl" ng-init="ctrlInit(@JsonConvert.SerializeObject(@Model))">
+    @Html.Partial("_CreateEdit", Model)
+       
+</div>
+
+@section styles {
+    <link href="~/Content/Stylesheets/Invoices.css" rel="stylesheet" />
+}
+
+@section scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script src="~/Scripts/app/invoices/invoicesCreateCtrl.js"></script>
+}

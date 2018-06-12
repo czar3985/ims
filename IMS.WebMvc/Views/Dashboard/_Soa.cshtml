@@ -1,0 +1,28 @@
+﻿@model IEnumerable<IMS.WebMvc.Models.SoaModel>
+
+<table class="table data-table">
+    <thead>
+        <tr>
+            <th>Date Issued</th>
+            <th>Insured</th>
+            <th>Amout Due</th>
+            <th>Due Date</th>
+            <th>Status</th>
+            <th>Remarks</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.IssueDate.ToString("MM/dd/yyyy")</td>
+                <td>@Html.DisplayFor(modelItem => item.ClientName)</td>
+                <td>@Html.DisplayFor(modelItem => item.TotalAmountDue)</td>
+                <td>@item.DueDate.ToString("MM/dd/yyyy")</td>
+                <td>@Html.DisplayFor(modelItem => item.StatusName)</td>
+                <td>@Html.DisplayFor(modelItem => item.Remarks)</td>
+            </tr>
+        }
+    </tbody>
+</table>
+

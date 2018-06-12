@@ -1,0 +1,134 @@
+﻿@using Newtonsoft.Json;
+@model IMS.WebMvc.Models.ClaimItemViewModel
+@{
+    ViewBag.Title = "Create";
+}
+<div ng-controller="claimsCreateCtrl" ng-init="ctrlInit(@JsonConvert.SerializeObject(@Model))">
+    @*@using (Html.BeginForm())*@
+    @*{*@
+    <form name="form" ng-submit="submit(form)">
+
+        @*@Html.AntiForgeryToken()*@
+
+        <div class="form-horizontal row">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="col-sm-6">
+                <div class="form-group">
+                    @Html.LabelFor(m => Model.ClientId, new { @class = "col-sm-3 control-label" })
+                    <div class="col-sm-9">
+                        <select name="ClientId" class="form-control" ng-change="clientChanged()" ng-model="claimVm.ClientId" data-val="true" data-val-required="Insured field is required" required>
+                            <option disabled value="0">Select a client...</option>
+                            @foreach (var item in Model.Clients)
+                            {
+                                <option value="@item.Id">@item.ClientName</option>
+                            }
+                        </select>
+                        @Html.ValidationMessageFor(m => Model.ClientId, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.PolicyNumber, htmlAttributes: new { @class = "control-label col-sm-3" })
+                    <div class="col-sm-9">
+                        <select name="PolicyId" class="form-control" ng-model="claimVm.PolicyId" ng-change="policyChanged()" data-val="true" data-val-required="Policy No. field is required" required>
+                            <option ng-repeat="item in policyList" value="{{item.Id}}">{{item.PolicyNumber}}</option>
+                        </select>
+                        @Html.ValidationMessageFor(m => Model.PolicyId, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => Model.CompanyName, new { @class = "col-sm-3 control-label" })
+                    <div class="col-sm-9">
+                        <input name="CompanyName" type="text" ng-model="claimVm.CompanyName" class="form-control" readonly />
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => Model.PolicyTypeName, new { @class = "col-sm-3 control-label" })
+                    <div class="col-sm-9">
+                        <input name="PolicyTypeName" type="text" ng-model="claimVm.PolicyTypeName" class="form-control" readonly />
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => Model.SumInsured, new { @class = "col-sm-3 control-label" })
+                    <div class="col-sm-9  format-input-number readonly-number">
+                        <input id="SumInsured" name="SumInsured" type="number" step="0.01" ng-model="claimVm.SumInsured" class="form-control" readonly />
+                        <label for="SumInsured">{{claimVm.SumInsured | number:2}}</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "control-label col-sm-3" })
+                    <div class="col-sm-9">
+                        @*@Html.TextAreaFor(model => model.Remarks, new { @class = "form-control" })*@
+                        <textarea class="form-control" cols="20" id="Remarks" name="Remarks" rows="2" ng-model="claimVm.Remarks"></textarea>
+                        @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-6">
+                <div class="form-group">
+                    @Html.LabelFor(m => Model.StatusId, new { @class = "col-sm-3 control-label" })
+                    <div class="col-sm-9">
+                        <input name="StatusName" type="text" value="@Model.StatusName" ng-model="claimVm.StatusName" class="form-control" readonly />
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.ClaimDate, htmlAttributes: new { @class = "control-label col-sm-3" })
+                    <div class="col-sm-9">
+                        <input name="ClaimDate" type="text" class="form-control datepicker datepicker-dropdown"
+                               data-val="true" value='@Model.ClaimDate.ToString("MM/dd/yyyy")'
+                               data-val-required="Claim's' date issued field is required" datetime="MM/dd/yyyy"
+                               ng-model="claimVm.ClaimDate"/>
+                        @Html.ValidationMessageFor(model => model.ClaimDate, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => Model.ExpiryDate, new { @class = "col-sm-3 control-label" })
+                    <div class="col-sm-9">
+                        <input name="ExpiryDate" type="text" ng-model="claimVm.ExpiryDateString" class="form-control" readonly />
+                        @Html.ValidationMessageFor(model => model.ExpiryDate, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.ClaimNumber, htmlAttributes: new { @class = "control-label col-sm-3" })
+                    <div class="col-sm-9">
+                        @*@Html.EditorFor(model => model.ClaimNumber, new { htmlAttributes = new { @class = "form-control", required = "required" } })*@
+                        <input class="form-control text-box single-line" data-val="true" data-val-required="The Claim No. field is required." 
+                               id="ClaimNumber" name="ClaimNumber" required="required" type="text" value="" ng-model="claimVm.ClaimNumber">
+                        @Html.ValidationMessageFor(model => model.ClaimNumber, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.ClaimAmount, htmlAttributes: new { @class = "control-label col-sm-3" })
+                    <div class="col-sm-9">
+                        @*@Html.EditorFor(model => model.ClaimAmount, new { htmlAttributes = new { @class = "form-control" } })*@
+                        <input class="form-control text-box single-line input-validation-error" data-val="true" data-val-number="The field Claim Amount must be a number." 
+                               data-val-range="The field Claim Amount should be greater than 0" 
+                               data-val-range-max="1.79769313486232E+308" data-val-range-min="0.01" 
+                               data-val-required="The Claim Amount field is required." id="ClaimAmount" 
+                               name="ClaimAmount" type="text" value="0.00" ng-model="claimVm.ClaimAmount">
+                        @Html.ValidationMessageFor(model => model.ClaimAmount, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-bottom-action row">
+            @if (string.IsNullOrEmpty(Model.ReturnUrl))
+            {
+                @Html.ActionLink("Cancel", "Index", null, new { @class = "btn btn-default" })
+            }
+            else
+            {
+                <a href="@Model.ReturnUrl" class="btn btn-default">Cancel</a>
+            }
+            <input type="submit" value="Create" class="btn btn-success" />
+        </div>
+
+        @*}*@
+    </form>
+</div>
+
+@section scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script src="~/Scripts/app/claims/claimsCreateCtrl.js"></script>
+}

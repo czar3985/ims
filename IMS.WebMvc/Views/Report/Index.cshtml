@@ -1,0 +1,72 @@
+﻿@model IMS.WebMvc.Models.ReportIndexModel
+@{
+    ViewBag.Title = "Reports";
+}
+
+<form class="form-horizontal" action='@Url.Action("ShowReport")'>
+    <h4>Report per Year, Company and Policy Type</h4>
+    <div class="form-group">
+        @Html.LabelFor(m => Model.Year, new { @class = "col-sm-2 control-label" })
+        <div class="col-sm-10">
+            <select name="Year" class="form-control">
+                @foreach (var item in Model.Years)
+                {
+                    <option value="@item">@item.ToString()</option>
+                }
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => Model.InsuranceProviderId, new { @class = "col-sm-2 control-label" })
+        <div class="col-sm-10">
+            <select name="InsuranceProviderId" class="form-control">
+                @foreach (var item in Model.InsuranceProviders)
+                {
+                    <option value="@item.Id">@item.Name</option>
+                }
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => Model.PolicyTypeId, new { @class = "col-sm-2 control-label" })
+        <div class="col-sm-10">
+            <select name="PolicyTypeId" class="form-control">
+                @foreach (var item in Model.PolicyTypes)
+                {
+                    <option value="@item.Id">@item.Name</option>
+                }
+            </select>
+        </div>
+    </div>
+    <input type="hidden" name="IsMonthlyProdType" value="false" />
+    <div class="form-bottom-action">
+        <button type="submit" class="btn btn-success">Show Report</button>
+    </div>
+</form>
+
+<form class="form-horizontal" action='@Url.Action("ShowReport")'>
+    <h4>Manila Overseas Commercial Inc. Monthly Production</h4>
+    <div class="form-group">
+        @Html.LabelFor(m => Model.Year, new { @class = "col-sm-2 control-label" })
+        <div class="col-sm-10">
+            <select name="Year" class="form-control">
+                @foreach (var item in Model.Years)
+                {
+                    <option value="@item">@item.ToString()</option>
+                }
+            </select>
+        </div>
+    </div>
+    <input type="hidden" name="IsMonthlyProdType" value="true" />
+    <div class="form-bottom-action">
+        <button type="submit" class="btn btn-success">Show Report</button>
+    </div>
+</form>
+
+@section scripts {
+<script>
+    $(document).ready(function () {
+        $("#menu-report").addClass('active');
+    });
+</script>
+}

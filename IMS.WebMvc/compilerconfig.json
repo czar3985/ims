@@ -1,0 +1,30 @@
+﻿[
+  {
+    "outputFile": "Content/Stylesheets/DashBoard.css",
+    "inputFile": "Content/Stylesheets/DashBoard.less"
+  },
+  {
+    "outputFile": "Content/Stylesheets/Layout.css",
+    "inputFile": "Content/Stylesheets/Layout.less"
+  },
+  {
+    "outputFile": "Content/Stylesheets/Common.css",
+    "inputFile": "Content/Stylesheets/Common.less"
+  },
+  {
+    "outputFile": "Content/Stylesheets/Accounts.css",
+    "inputFile": "Content/Stylesheets/Accounts.less"
+  },
+  {
+    "outputFile": "Content/Stylesheets/Invoices.css",
+    "inputFile": "Content/Stylesheets/Invoices.less"
+  },
+  {
+    "outputFile": "Content/Stylesheets/Soa.css",
+    "inputFile": "Content/Stylesheets/Soa.less"
+  },
+  {
+    "outputFile": "Content/Stylesheets/Reports.css",
+    "inputFile": "Content/Stylesheets/Reports.less"
+  }
+]

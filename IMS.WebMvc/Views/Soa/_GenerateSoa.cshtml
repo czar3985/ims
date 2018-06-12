@@ -1,0 +1,122 @@
+﻿@model IMS.WebMvc.Models.SoaModel
+
+<div id="soa-content">
+    <div id="soa-header">
+        @Html.Partial("~/Views/Shared/_CompanyHeader.cshtml")
+
+        <h4 id="soa-title">
+            <strong>STATEMENT OF ACCOUNT</strong>
+        </h4>
+        <br />
+    </div>
+    <div id="soa-client-box">
+        <div class="container-fluid">
+            <br />
+            <div class="row">
+                <div class="col-xs-2"><strong>INSURED:</strong></div>
+                <div class="col-xs-5 soa-client-details">@Model.ClientName</div>
+                <div class="col-xs-2"><strong>DUE DATE:</strong></div>
+                <div class="col-xs-2 soa-client-details">@Model.DueDate.ToString("MM/dd/yyyy")</div>
+            </div>
+            <br />
+            <div class="row">
+                <div class="col-xs-2"><strong>ADDRESS:</strong></div>
+                <div class="col-xs-9 soa-client-details">@Model.Address</div>
+            </div>
+            <br />
+        </div>
+    </div>
+    <table class="table" id="soa-table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Policy No.</th>
+                <th>Premium</th>
+                <th>Total Taxes and Fees</th>
+                @*<th>Total</th>*@
+                @*<th>EWT 2%</th>*@
+                <th>Amount Due</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var group in Model.SoaGroups)
+            {
+                if (@group.AmountDueSum == 0) {
+                    continue;
+                }
+
+                <tr>
+                    <td colspan="6">@group.PolicyTypeName.ToUpper()</td>
+                </tr>
+                foreach (var entry in group.SoaTableEntries)
+                {
+                    <tr>
+                        <td>@entry.IssueDate.ToString("MM/dd/yyyy")</td>
+                        <td>@entry.PolicyNumber</td>
+                        <td class="number">
+                            @string.Format("{0:N}", @entry.Premium)
+                        </td>
+                        <td class="number">
+                            @string.Format("{0:N}", @entry.Tax)
+                        </td>
+                        <td class="number">
+                            @string.Format("{0:N}", @entry.Total)
+                        </td>
+                        @*<td class="number">
+                            @string.Format("{0:N}", @entry.Ewt)
+                        </td>*@
+                        @*<td class="number">
+                            @string.Format("{0:N}", @entry.AmountDue)
+                        </td>*@
+                    </tr>
+                }
+                <tr>
+                    <td></td>
+                    <td><strong>Totals:</strong></td>
+                    <td class="number">
+                        <strong>
+                            @string.Format("{0:N}", @group.PremiumSum)
+                        </strong>
+                    </td>
+                    <td class="number">
+                        <strong>
+                            @string.Format("{0:N}", @group.TaxSum)
+                        </strong>
+                    </td>
+                    <td class="number">
+                        <strong>
+                            @string.Format("{0:N}", @group.TotalSum)
+                        </strong>
+                    </td>
+                    @*<td class="number">
+                        <strong>
+                            @string.Format("{0:N}", @group.EwtSum)
+                        </strong>
+                    </td>*@
+                    @*<td class="number">
+                        <strong>
+                            @string.Format("{0:N}", @group.AmountDueSum)
+                        </strong>
+                    </td>*@
+                </tr>
+            }
+            <tr><td colspan="6"></td></tr>
+            <tr>
+                <td colspan="4"><strong>Total Amount Due</strong></td>
+                <td class="number">
+                    <strong>
+                        Php @string.Format("{0:N}", @Model.TotalAmountDue)
+                    </strong>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="container-fluid">
+        <p>
+            Notes:<br />
+            1.) Please issue check paid to name of @Model.CompanyName.ToUpper()<br />
+            2.) Please issue Tax Withheld at Source (BIR Form 2307) together with your payment.
+        </p>
+    </div>
+    <br />
+</div>

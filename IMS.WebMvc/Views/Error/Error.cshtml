@@ -1,0 +1,13 @@
+﻿@model IMS.WebMvc.Controllers.ErrorModel
+
+@{
+    ViewBag.Title = "Error";
+}
+
+<h2>@Model.Title</h2>
+
+<div>
+    @Model.Message
+</div>
+
+<a href="@Model.ReturnUrl">Go Back</a>

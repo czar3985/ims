@@ -1,0 +1,307 @@
+﻿@model IMS.WebMvc.Models.InvoiceItemViewModel
+
+<form name="form" ng-submit="submit(form)">
+    <div class="form-horizontal row">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="col-sm-6">
+            <div class="form-group">
+                @Html.LabelFor(model => model.ClientId, htmlAttributes: new { @class = "control-label col-sm-3" })
+                <div class="col-sm-9">
+                    <select name="ClientId" class="form-control" ng-change="clientChanged()" ng-model="invoiceVm.ClientId" ng-disabled="isReadOnly() || invoiceVm.IsFromPolicy" required>
+                        <option disabled value="0">Select a client...</option>
+                        @foreach (var item in Model.Clients)
+                        {
+                            <option value="@item.Id">
+                                @item.ClientName
+                            </option>
+                        }
+                    </select>
+                    @Html.ValidationMessageFor(model => model.ClientId, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            @*<div class="form-group">
+                @Html.LabelFor(model => model.AccountNumber, htmlAttributes: new { @class = "control-label col-sm-3" })
+                <div class="col-sm-9">
+                    <input type="text" ng-model="invoiceVm.AccountNumber" class="form-control" readonly />
+                </div>
+            </div>*@
+            <div class="form-group">
+                @Html.LabelFor(model => model.PolicyNumber, htmlAttributes: new { @class = "control-label col-sm-3" })
+                <div class="col-sm-9">
+                    <select name="PolicyId" class="form-control" ng-model="invoiceVm.PolicyId" ng-change="policyChanged()" ng-disabled="isReadOnly() || invoiceVm.IsFromPolicy">
+                        <option ng-repeat="item in policyList" value="{{item.Id}}">{{item.PolicyNumber}}</option>
+                    </select>
+                    @Html.ValidationMessageFor(model => model.PolicyId, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.CompanyName, htmlAttributes: new { @class = "control-label col-sm-3" })
+                <div class="col-sm-9">
+                    <input type="text" value="{{invoiceVm.CompanyName}}" class="form-control" readonly />
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.EndorsementNumber, htmlAttributes: new { @class = "control-label col-sm-3" })
+                <div class="col-sm-9">
+                    <input name="EndorsementNumber" type="text" value="{{invoiceVm.EndorsementNumber}}" class="form-control" readonly />
+                    @Html.ValidationMessageFor(model => model.EndorsementNumber, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "control-label col-sm-3" })
+                <div class="col-sm-9">
+                    <input type="text" ng-model="invoiceVm.Remarks" class="form-control" ng-disabled="isReadOnly()" />
+                    @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="form-group">
+                @Html.LabelFor(model => model.IssueDate, htmlAttributes: new { @class = "control-label col-sm-3" })
+                <div class="col-sm-9">
+                    <input name="IssueDate" type="text" class="form-control datepicker datepicker-dropdown"
+                           value='@Model.IssueDate.ToString("MM/dd/yyyy")' ng-model="invoiceVm.IssueDate" data-val="true"
+                           data-val-required="Date Issued field is required" datetime="MM/dd/yyyy" ng-disabled="isReadOnly()" />
+                    @Html.ValidationMessageFor(model => model.IssueDate, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.DueDate, htmlAttributes: new { @class = "control-label col-sm-3" })
+                <div class="col-sm-9">
+                    <input name="DueDate" type="text" class="form-control datepicker datepicker-dropdown"
+                           value='@Model.DueDate.ToString("MM/dd/yyyy")' ng-model="invoiceVm.DueDate" data-val="true"
+                           data-val-required="Due Date field is required" datetime="MM/dd/yyyy" ng-disabled="isReadOnly()" />
+                    @Html.ValidationMessageFor(model => model.DueDate, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.InvoiceNumber, htmlAttributes: new { @class = "control-label col-sm-3" })
+                <div class="col-sm-9">
+                    @Html.TextBoxFor(m => Model.InvoiceNumber, new { @class = "form-control", ng_disabled = "isReadOnly()", required = "required", ng_model = "invoiceVm.InvoiceNumber" })
+                    <span class="text-danger" ng-if="errorVars.InvoiceNumber">Invoice Number should be unique</span>
+                    @Html.ValidationMessageFor(model => model.InvoiceNumber, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.TotalAmountDue, htmlAttributes: new { @class = "control-label col-sm-3" })
+                <div class="col-sm-9 format-input-number readonly-number">
+                    <input id="TotalAmountDue" type="number" class="form-control" ng-model="totalAmountDue" readonly />
+                    <label for="TotalAmountDue">{{totalAmountDue | number:2}}</label>
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.StatusId, htmlAttributes: new { @class = "control-label col-sm-3" })
+                <div class="col-sm-9">
+                    <input name="StatusName" type="text" value="@Model.StatusName" class="form-control" readonly />
+                </div>
+            </div>
+            @if (User.IsInRole("Admin"))
+            {
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Rebate, htmlAttributes: new { @class = "control-label col-sm-3" })
+                    <div class="col-sm-9 format-input-number">
+                        <input name="Rebate" id="Rebate" type="number" value="@Model.Rebate" class="form-control" ng-model="invoiceVm.Rebate" ng-disabled="isReadOnly()" ng-change="rebateChanged()"/>
+                        <label for="Rebate" ng-class="{'readonly-label': isReadOnly()}">{{invoiceVm.Rebate | number:6}}</label>
+                        @Html.ValidationMessageFor(m => Model.Rebate, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <table class="table table-with-input">
+        <thead>
+            <tr><th colspan="5">Particulars</th></tr>
+            <tr>
+                <th>No.</th>
+                <th>Item</th>
+                <th>Amount</th>
+                <th>Remarks</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-hide="hidePremium">
+                <td><input type="text" value="1" class="form-control" size="2" readonly /></td>
+                <td><input type="text" value="Premium" class="form-control" readonly /></td>
+                <td class="number">
+                    <div class="format-input-number-right readonly-number">
+                        <input id="PremiumParticular" type="number" ng-model="premium.ParticularAmount"
+                               class="form-control" readonly />
+                        <label for="PremiumParticular">{{premium.ParticularAmount | number:2}}</label>
+                    </div>
+                </td>
+                <td><input type="text" class="form-control" ng-model="premium.Remarks" ng-disabled="isReadOnly()" /></td>
+                <td>
+                    <button class="btn btn-default" title="Delete" disabled>
+                        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                    </button>
+                </td>
+            </tr>
+            <tr ng-hide="hidePremium">
+                <td><input type="text" value="2" class="form-control" size="2" readonly /></td>
+                <td><input type="text" value="Value-Added Tax (VAT)" class="form-control" readonly /></td>
+                <td class="number">
+                    <div class="format-input-number-right readonly-number">
+                        <input id="VATParticular" type="number" ng-model="vat.ParticularAmount"
+                               class="form-control" readonly />
+                        <label for="VATParticular">{{vat.ParticularAmount | number:2}}</label>
+                    </div>
+                </td>
+                <td><input type="text" class="form-control" ng-model="vat.Remarks" ng-disabled="isReadOnly() || hasVAT == false" /></td>
+                <td>
+                    <button type="button" class="btn btn-default" title="Delete" ng-click="hasVATChanged()" ng-disabled="isReadOnly()">
+                        <span class="glyphicon" aria-hidden="true" ng-class="{'glyphicon-check': hasVAT == true, 'glyphicon-unchecked': hasVAT == false}"></span>
+                    </button>
+                </td>
+            </tr>
+            <tr ng-repeat="item in pList">
+                <td><input type="text" value="{{$index + 2}}" class="form-control" size="2" readonly /></td>
+                <td>
+                    <select ng-model="item.ParticularTypeId" class="form-control" ng-disabled="isReadOnly()">
+                        <option ng-repeat="pType in particularTypeList" value="{{pType.Id}}">
+                            {{pType.Name}}
+                        </option>
+                    </select>
+                </td>
+                <td class="number">
+                    @if (Model.IsReadOnlyState)
+                    {
+                        <div class="format-input-number-right readonly-number">
+                            <input name="ParticularAmount_{{$index + 2}}" id="ParticularAmount_{{$index + 2}}" type="number"
+                                   class="form-control" ng-model="item.ParticularAmount" ng-change="amountChanged()"
+                                   ng-disabled="isReadOnly()" min="0.01" max="1.79769313486232E+308" />
+                            <label for="ParticularAmount_{{$index + 1}}">{{item.ParticularAmount | number:2}}</label>
+                            <span class="text-danger field-validation-error" data-valmsg-for="ParticularAmount_{{$index + 2}}"
+                                  data-valmsg-replace="true">
+                            </span>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="format-input-number-right">
+                            <input name="ParticularAmount_{{$index + 2}}" id="ParticularAmount_{{$index + 2}}" type="number"
+                                   class="form-control" ng-model="item.ParticularAmount" ng-change="amountChanged()"
+                                   ng-disabled="isReadOnly()" min="0.01" max="1.79769313486232E+308" />
+                            <label for="ParticularAmount_{{$index + 1}}">{{item.ParticularAmount | number:2}}</label>
+                            <span class="text-danger field-validation-error" data-valmsg-for="ParticularAmount_{{$index + 2}}"
+                                  data-valmsg-replace="true">
+                            </span>
+                        </div>
+                    }
+                </td>
+                <td><input type="text" class="form-control" ng-model="item.Remarks" ng-disabled="isReadOnly()" /></td>
+                <td>
+                    <button class="btn btn-default" type="button" title="Delete" ng-click="removeParticular($index)" ng-disabled="isReadOnly()">
+                        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                    </button>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button class="btn btn-default" type="button" title="Add Row" ng-click="addParticular()" ng-show="!isReadOnly()">
+                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                    </button>
+                </td>
+                <td class="number">
+                    @Html.LabelFor(model => model.TotalAmountDue, htmlAttributes: new { @class = "control-label" })
+                </td>
+                <td class="number">
+                    <div class="format-input-number-right readonly-number">
+                        <input id="TotalAmountDue_Table" type="text" class="form-control" ng-model="totalAmountDue" readonly />
+                        <label for="TotalAmountDue_Table">{{totalAmountDue | number:2}}</label>
+                    </div>
+                </td>
+                <td></td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+    <hr />
+    <div class="row form-horizontal">
+        <div class="col-sm-6 col-sm-offset-6">
+            @if (Model.StatusName.ToLower() == "unpaid")
+            {
+                <div class="form-group">
+                    @Html.LabelFor(model => model.PaidDate, htmlAttributes: new { @class = "control-label col-sm-3" })
+                    <div class="col-sm-9">
+                        <input name="PaidDate" type="text" class="form-control datepicker datepicker-dropdown"
+                               value='@Model.PaidDate.ToString("MM/dd/yyyy")' ng-model="invoiceVm.PaidDate" data-val="true"
+                               data-val-required="Paid Date field is required" datetime="MM/dd/yyyy" />
+                        @Html.ValidationMessageFor(model => model.PaidDate, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            }
+
+            @if (Model.StatusName.ToLower() == "unpaid" || Model.StatusName.ToLower() == "paid")
+            {
+                <div class="form-group">
+                    <label for="ORNumber" class="control-label col-sm-3">OR Number</label>
+                    <div class="col-sm-9">
+                        <input class="form-control" name="ORNumber" type="text" ng-model="invoiceVm.ORNumber" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="HasEWT" class="control-label col-sm-3">Has EWT</label>
+                    <div class="checkbox col-sm-9">
+                        <label>
+                            <input name="HasEWT" type="checkbox" ng-model="invoiceVm.HasEWT" ng-change="hasEWTChanged()" />
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="AmountPaid" class="control-label col-sm-3">Amount Paid</label>
+                    <div class="col-sm-9 format-input-number readonly-number">
+                        <input class="form-control" name="AmountPaid" type="text" ng-model="invoiceVm.AmountPaid" readonly />
+                        <label>{{invoiceVm.AmountPaid | number:2}}</label>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="form-bottom-action row">
+        @if (!string.IsNullOrEmpty(Model.ReturnUrl))
+        {
+            <a href="@Model.ReturnUrl" class="btn btn-default" ng-hide="hidePremium == true">Cancel</a>
+        }
+        else
+        {
+            @Html.ActionLink("Cancel", "Index", null, new { @class = "btn btn-default" })
+        }
+
+        @if (Model.StatusName.ToLower() == "new")
+        {
+            <input type="submit" value="Submit" class="btn btn-success" ng-disabled="hidePremium == true"/>
+        }
+        else if (Model.StatusName.ToLower() == "pending")
+        {
+            if (User.IsInRole("Admin"))
+            {
+                <input type="button" value="Reject" class="btn btn-default" ng-click="changeState(1)" ng-disabled="hidePremium == true"/>
+                <input type="button" value="Approve" class="btn btn-success" ng-click="changeState(0)" ng-disabled="hidePremium == true"/>
+            }
+            <input type="submit" value="Save Changes" class="btn btn-success" ng-disabled="hidePremium == true" />
+        }
+        else if (Model.StatusName.ToLower() == "rejected")
+        {
+            <input type="submit" value="Save Changes" class="btn btn-success" />
+        }
+        else if (Model.StatusName.ToLower() == "approved")
+        {
+            <button type="button" class="btn btn-success" ng-click="emailApprovedInvoice(@Model.Id)" ng-disabled="hidePremium == true">
+                Email to Client
+                <i class="fa fa-spin fa-spinner" ng-show="isSending"></i>
+            </button>
+        }
+        else if (Model.StatusName.ToLower() == "unpaid")
+        {
+            <input type="button" value="Mark as Paid" class="btn btn-success" ng-click="changeState(4)" ng-disabled="hidePremium == true"/>
+            @*<input type="button" value="Mark as Paid" class="btn btn-success" ng-click="markAsPaid()" />*@
+        }
+        else if (Model.StatusName.ToLower() == "paid")
+        {
+            <input type="button" value="Save" class="btn btn-success" ng-click="changeState(5)" ng-disabled="hidePremium == true" />
+        }
+    </div>
+
+</form>

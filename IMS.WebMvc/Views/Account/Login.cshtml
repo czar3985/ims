@@ -1,0 +1,72 @@
+﻿@using IMS.WebMvc.Models
+@model LoginViewModel
+@{
+    Layout = "~/Views/Shared/_LayoutPageNoNav.cshtml";
+    ViewBag.Title = "Log in";
+}
+
+<div id="accounts-login-html" class="container">
+    <h1>
+        <span class="go-big-logo">Go.BIG</span> Insurance Management System
+    </h1>
+    <div class="row">
+        <div id="login" class="col-sm-6 col-sm-push-6 well">
+            <section id="loginForm">
+                @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <h3 class="moci-name">MANILA OVERSEAS COMMERCIAL, INC.</h3>
+
+                    @Html.ValidationSummary("", new { @class = "text-danger" })
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.UserName, new { @class = "col-md-3 control-label" })
+                        <div class="col-md-9">
+                            @Html.TextBoxFor(m => m.UserName, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.UserName, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Password, new { @class = "col-md-3 control-label" })
+                        <div class="col-md-9">
+                            @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-xs-6">
+                            @Html.ActionLink("Forgot Password", "ForgotPassword", "Account")
+                            @*<a href="#">Forgot Password?</a>*@
+                        </div>
+                        <div class="col-xs-6 text-right">
+                            <button type="submit" class="btn btn-success btn-sm login-btn">Login</button>
+                        </div>
+                    </div>
+                }
+            </section>
+        </div>
+
+        <div id="company-info" class="col-sm-6 col-sm-pull-6">
+            <img src="~/Content/Images/IMSLogo.jpg" alt="IMS Logo" class="img-responsive img-rounded" />
+            <p>
+                <span>
+                    <span class="go-big-logo">Go.BIG</span>
+                    <span class="ims-name">Insurance Management System</span>
+                </span>
+                    automates the process of policy issuance, invoicing up to accounts receivable. It offers real time monitoring of insurance policy status (expiring, canceled, etc.)
+            </p>
+            <p>
+                The system allows you to maintain client profiles (total business, claims, etc.) for further analysis. It provides a facility for real time report generation, notification and alerts.
+            </p>
+        </div>
+    </div>
+</div>
+
+@section styles {
+    <link href="~/Content/Stylesheets/Accounts.css" rel="stylesheet" />
+}
+
+@section scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

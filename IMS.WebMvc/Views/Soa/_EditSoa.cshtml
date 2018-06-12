@@ -1,0 +1,93 @@
+﻿@model IMS.WebMvc.Models.SoaIndexModel
+
+<div id="soa-edit-modal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Edit SOA</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" name="form" ng-submit="submitUpdate(form)">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.ClientId, htmlAttributes: new { @class = "control-label col-sm-2" })
+                        <div class="col-sm-10">
+                            <select name="ClientId" class="form-control" ng-change="clientChanged()" ng-model="soaVm.ClientId">
+                                @foreach (var item in Model.Clients)
+                                {
+                                    if (@item.Id == Model.ClientId)
+                                    {
+                                        <option selected="selected" value="@item.Id">@item.ClientName</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@item.Id">@item.ClientName</option>
+                                    }
+                                }
+                            </select>
+                            @Html.ValidationMessageFor(model => model.ClientId, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.IssueDate, htmlAttributes: new { @class = "control-label col-sm-2" })
+                        <div class="col-sm-10">
+                            <input name="IssueDate" type="text" class="form-control datepicker datepicker-dropdown" id="soa-issue-date"
+                                   data-val="true" ng-model="soaVm.IssueDate" datetime="MM/dd/yyyy"
+                                   data-val-required="Issue date is required" />
+                            @Html.ValidationMessageFor(model => model.IssueDate, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.DueDate, htmlAttributes: new { @class = "control-label col-sm-2" })
+                        <div class="col-sm-10">
+                            <input name="DueDate" type="text" class="form-control datepicker datepicker-dropdown" id="soa-due-date"
+                                   data-val="true" ng-model="soaVm.DueDate" datetime="MM/dd/yyyy" 
+                                   data-val-required="Due date is required" />
+                            @Html.ValidationMessageFor(model => model.DueDate, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.InsuranceProviderId, htmlAttributes: new { @class = "control-label col-sm-2" })
+                        <div class="col-sm-10">
+                            <select name="InsuranceProviderId" class="form-control" ng-model="soaVm.InsuranceProviderId">
+                                <option ng-repeat="item in companyList" value="{{item.Id}}">{{item.Name}}</option>
+                            </select>
+                            @Html.ValidationMessageFor(model => model.InsuranceProviderId, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.StatusId, htmlAttributes: new { @class = "control-label col-sm-2" })
+                        <div class="col-sm-10">
+                            <select name="StatusId" class="form-control" ng-model="soaVm.StatusId">
+                                @foreach (var item in Model.Statuses)
+                                {
+                                    if (@item.Id == Model.StatusId)
+                                    {
+                                        <option selected="selected" value="@item.Id">@item.Name</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@item.Id">@item.Name</option>
+                                    }
+                                }
+                            </select>
+                            @Html.ValidationMessageFor(model => model.StatusId, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "control-label col-sm-2" })
+                        <div class="col-sm-10">
+                            <input name="Remarks" type="text" class="form-control"
+                                   value="@Model.Remarks" ng-model="soaVm.Remarks"/>
+                            @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-bottom-action">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-success">OK</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

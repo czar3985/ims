@@ -1,0 +1,434 @@
+﻿@using Newtonsoft.Json;
+@model IMS.WebMvc.Models.PolicyDetailModel
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<div id="policy-details-html" ng-controller="policiesDetailsCtrl" ng-init="ctrlInit(@JsonConvert.SerializeObject(@Model))">
+    @Html.Partial("_EndorsementModals")
+    @Html.Partial("_AddAttachment", Model)
+    @Html.Partial("_ConfirmDelete")
+
+    <div class="modal fade" id="renewalNoticePolicyModal" role="dialog">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Renewal Notice</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Please select how to process the renewal of the selected item.</p>
+                    <a href='@Url.Action("RenewalNoticeAsPdf", "Dashboard", new { id = Model.Id, clientName = Model.ClientName })' class="btn btn-default" id="generate" ng-click="generatePDF()">
+                        Generate PDF
+                    </a>
+                    <button type="button" class="btn btn-default pull-right" id="send-to-client" data-dismiss="modal" ng-click="emailRenewalNotice(@Model.Id)">Send to client</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @Html.Partial("_RenewPolicy")
+
+    <div class="details-box form-horizontal">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    @Html.LabelFor(m => Model.PolicyNumber, new { @class = "col-xs-4 control-label" })
+                    <div class="col-xs-8 detail-value">
+                        @Model.PolicyNumber
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    @Html.LabelFor(m => Model.StatusName, new { @class = "col-xs-4 control-label" })
+                    <div class="col-xs-8 detail-value">
+                        @Model.StatusName
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    @Html.LabelFor(m => Model.CompanyName, new { @class = "col-xs-4 control-label" })
+                    <div class="col-xs-8 detail-value">
+                        @Model.CompanyName
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    @Html.LabelFor(m => Model.DateIssued, new { @class = "col-xs-4 control-label" })
+                    <div class="col-xs-8 detail-value">
+                        @Model.DateIssued.ToString("MM/dd/yyyy")
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    @Html.LabelFor(m => Model.PolicyTypeName, new { @class = "col-xs-4 control-label" })
+                    <div class="col-xs-8 detail-value">
+                        @Model.PolicyTypeName
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    @Html.LabelFor(m => Model.ExpiryDate, new { @class = "col-xs-4 control-label" })
+                    <div class="col-xs-8 detail-value">
+                        @Model.ExpiryDate.ToString("MM/dd/yyyy")
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    @Html.LabelFor(m => Model.ClientName, new { @class = "col-xs-4 control-label" })
+                    <div class="col-xs-8 detail-value">
+                        @Model.ClientName
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    @Html.LabelFor(m => Model.RenewalPolicyNumber, new { @class = "col-xs-4 control-label" })
+                    <div class="col-xs-8 detail-value">
+                        @Model.RenewalPolicyNumber
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    @Html.LabelFor(m => Model.SumInsured, new { @class = "col-xs-4 control-label" })
+                    <div class="col-xs-8 detail-value">
+                        @String.Format("{0:N}", @Model.SumInsured)
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    @Html.LabelFor(m => Model.Premium, new { @class = "col-xs-4 control-label" })
+                    <div class="col-xs-8 detail-value">
+                        @String.Format("{0:N}", Model.Premium)
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            @if (User.IsInRole("Admin"))
+            {
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        @Html.LabelFor(m => Model.Rebate, new { @class = "col-xs-4 control-label" })
+                        <div class="col-xs-8 detail-value">
+                            @String.Format("{0:F6}", Model.Rebate)
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        @Html.LabelFor(m => Model.Remarks, new { @class = "col-xs-4 control-label" })
+                        <div class="col-xs-8 detail-value">
+                            @Model.Remarks
+                        </div>
+                    </div>
+                </div>
+            }
+            <div class="col-sm-6">
+                <div class="form-group">
+                    @Html.LabelFor(m => Model.Rate, new { @class = "col-xs-4 control-label" })
+                    <div class="col-xs-8 detail-value">
+                        @String.Format("{0:F6}", Model.Rate)
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                @if (User.IsInRole("Admin"))
+                {
+                    <div class="form-group">
+                        @Html.LabelFor(m => Model.Remarks, new { @class = "col-xs-4 control-label" })
+                        <div class="col-xs-8 detail-value">
+                            @Model.Remarks
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    @Html.LabelFor(m => Model.AgentName, new { @class = "col-xs-4 control-label" })
+                    <div class="col-xs-8 detail-value">
+                        @Model.AgentName
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <table class="table">
+                <thead>
+                    <tr><th colspan="3">Risks</th></tr>
+                    <tr>
+                        <th>Amount Insured</th>
+                        <th>Rate</th>
+                        <th>Remarks</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Risks)
+                    {
+                        <tr>
+                            <td>
+                                @String.Format("{0:N}", @item.AmountInsured)
+                            </td>
+                            <td>
+                                @String.Format("{0:F6}", @item.Rate)
+                            </td>
+                            <td>
+                                @item.Remarks
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    @{
+        var returnUrl = Url.Action("Details", "Policy", new { id = Model.Id });
+    }
+
+    @if (Model.StatusName.ToLower() == "cancelled")
+    {
+        <div class="page-mid-action">
+            <button class="btn btn-default" id="renewal-button-policy" type="button"
+                    data-toggle="modal" data-target="#renewalNoticePolicyModal" disabled>
+                Renewal Notice
+            </button>
+
+            <button class="btn btn-default" type="button" data-toggle="modal" data-target="#renew-policy-modal" disabled>
+                Renew
+            </button>
+
+            <button class="btn btn-default" type="button" disabled>
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                Endorsement
+            </button>
+
+            <button class="btn btn-default" type="button" disabled>
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                Invoice
+            </button>
+
+            <button class="btn btn-default" type="button" disabled>
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                Claim
+            </button>
+
+            <button class="btn btn-default" type="button" disabled>
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                Attachment
+            </button>
+
+            <button class="btn btn-default" type="button" ng-click="cancelPolicy()" disabled>
+                Cancel Policy
+            </button>
+        </div>
+    }
+    else
+    {
+
+        <div class="page-mid-action">
+            <button class="btn btn-default" id="renewal-button-policy" type="button"
+                    data-toggle="modal" data-target="#renewalNoticePolicyModal">
+                Renewal Notice
+            </button>
+
+            <button class="btn btn-default" type="button" data-toggle="modal" data-target="#renew-policy-modal">
+                Renew
+            </button>
+
+            <button class="btn btn-default" type="button" data-toggle="modal" data-target="#add-endorsement-modal">
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                Endorsement
+            </button>
+
+            <a href='@Url.Action("CreateEdit", "Invoice", new { policyId = Model.Id, returnUrl = returnUrl })' class="btn btn-default" type="button">
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                Invoice
+            </a>
+
+
+            <a href='@Url.Action("Create", "Claim", new { returnUrl = returnUrl })' class="btn btn-default" type="button">
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                Claim
+            </a>
+
+            <button class="btn btn-default" id="renewal-button-policy" type="button"
+                    data-toggle="modal" data-target="#add-attachment-modal">
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                Attachment
+            </button>
+
+            <form id="cancel-policy" action='@Url.Action("CancelPolicy", new { id = Model.Id })' method="post" style="display: inline-block">
+                <button class="btn btn-default" type="button" ng-click="cancelPolicy()">
+                    Cancel Policy
+                </button>
+            </form>
+        </div>
+    }
+
+    <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
+        <li class="active"><a href="#policy-invoices" data-toggle="tab">Invoices</a></li>
+        <li><a href="#policy-endorsements" data-toggle="tab">Endorsements</a></li>
+        <li><a href="#policy-claims" data-toggle="tab">Claims</a></li>
+        <li><a href="#policy-attachments" data-toggle="tab">Attachments</a></li>
+    </ul>
+
+    <div id="dashboard-tabs" class="tab-content">
+        <div class="tab-pane active" id="policy-invoices">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Invoice No.</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th>Remarks</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.PolicyInvoices)
+                    {
+                        <tr>
+                            <td>
+                                @item.IssueDate.ToString("MM/dd/yyyy")
+                            </td>
+                            <td>@Html.DisplayFor(modelItem => item.InvoiceNumber)</td>
+                            <td class="number">@Html.DisplayFor(modelItem => item.TotalAmountDue)</td>
+                            <td>@Html.DisplayFor(modelItem => item.StatusName)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Remarks)</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="tab-pane" id="policy-endorsements">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>@Html.DisplayNameFor(m => Model.Endt.IssueDate)</th>
+                        <th>@Html.DisplayNameFor(m => Model.Endt.EffectiveDate)</th>
+                        <th>@Html.DisplayNameFor(m => Model.Endt.EndorsementNumber)</th>
+                        <th>@Html.DisplayNameFor(m => Model.Endt.TotalEndorsementAmount)</th>
+                        <th>@Html.DisplayNameFor(m => Model.Endt.Remarks)</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Endorsements)
+                    {
+                        <tr>
+                            <td>@item.IssueDate.ToString("MM/dd/yyyy")</td>
+                            <td>@item.EffectiveDate.ToString("MM/dd/yyyy")</td>
+                            <td>@Html.DisplayFor(m => item.EndorsementNumber)</td>
+                            <td class="number">@Html.DisplayFor(m => item.TotalEndorsementAmount)</td>
+                            <td>@Html.DisplayFor(m => item.Remarks)</td>
+                            <td>
+                                <button class="btn btn-default btn-xs" type="button" data-toggle="modal"
+                                        data-target="#edit-endorsement-modal" ng-click="edit(@item.Id)">
+                                    <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="tab-pane" id="policy-claims">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Claim No.</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th>Remarks</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.PolicyClaims)
+                    {
+                        <tr>
+                            <td>
+                                @item.ClaimDate.ToString("MM/dd/yyyy")
+                            </td>
+                            <td>@Html.DisplayFor(modelItem => item.ClaimNumber)</td>
+                            <td class="number">@Html.DisplayFor(modelItem => item.ClaimAmount)</td>
+                            <td>@Html.DisplayFor(modelItem => item.StatusName)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Remarks)</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="tab-pane" id="policy-attachments">
+            <table class="table data-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>File</th>
+                        <th>Remarks</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.PolicyAttachments)
+                    {
+                        <tr>
+                            <td>
+                                @item.PostedDate.ToString("MM/dd/yyyy")
+                            </td>
+                            <td>@Html.DisplayFor(modelItem => item.FileName)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Remarks)</td>
+                            <td>
+                                @*<a href="@item.FileUrl" target="_blank" class="btn btn-default btn-xs" aria-label="Download" title="Download" download>
+                                        <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+                                    </a>*@
+                                <a href='@Url.Content(item.FileUrl)' target="_blank" class="btn btn-default btn-xs" aria-label="Download" title="Download" download>
+                                    <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+                                </a>
+                                <button type="button" class="btn btn-default btn-xs" aria-label="Delete" title="Delete" ng-click="deleteAttachment(@item.Id)" data-toggle="modal" data-target="#confirm-delete-modal">
+                                    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script src="~/Scripts/libs/toastr/toastr.min.js"></script>
+    <script src="~/Scripts/app/policies/policiesDetailsCtrl.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#menu-policy").addClass('active');
+            $('.datepicker').datepicker();
+        });
+    </script>
+}

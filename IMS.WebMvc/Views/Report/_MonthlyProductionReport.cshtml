@@ -1,0 +1,89 @@
+﻿@model IMS.WebMvc.Models.ReportIndexModel
+
+<button type="button" class="btn btn-default" id="dowload-button" aria-label="Download" 
+        ng-click="download('monthly-prod-report-table')">
+    <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+</button>
+
+<div class="tab-content">
+    <table class="table report-table" id="monthly-prod-report-table">
+        <thead>
+            <tr>
+                @{var index = Model.CellsTotalAnnualProd + 1; }
+                <th colspan="@index">
+                    Manila Overseas Commercial Inc. @Model.Year Monthly Production
+                </th>
+            </tr>
+            <tr>
+                <th rowspan="2">@Model.Year</th>
+                @foreach (var item in Model.InsuranceProviders)
+                {
+                    <th colspan="@Model.PolicyTypes.Count()">@item.Name</th>
+                }
+                <th>Total</th>
+            </tr>
+            <tr>
+                @foreach (var item in Model.InsuranceProviders)
+                {
+                    foreach (var type in Model.PolicyTypes)
+                    {
+                        <th>@type.Name</th>
+                    }
+                }
+                <th>All Lines</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{ index = 0;}
+            @foreach (var month in Model.Months)
+            {
+                <tr>
+                    <td><strong>@month</strong></td>
+                    @foreach (var comp in Model.MonthlyProdByCompanyList)
+                    {
+                        foreach (var type in comp.MonthlyProdList)
+                        {
+                            <td>@type.FormattedMonthlyProd[index]</td>
+                        }
+                    }
+                    <td>@Html.DisplayFor(model => model.TotalMonthlyAllLines[index].Amount)</td>
+                </tr>
+                index++;
+            }
+            <tr>
+                <td>Total</td>
+                @foreach (var comp in Model.MonthlyProdByCompanyList)
+                {
+                    foreach (var type in comp.MonthlyProdList)
+                    {
+                        <td>@type.FormattedTotal</td>
+                    }
+                }
+                <td> - </td>
+            </tr>
+            <tr>
+                <td></td>
+                @foreach (var comp in Model.MonthlyProdByCompanyList)
+                {
+                    index = Model.CellsTotalProd - 1;
+                    while (index-- != 0)
+                    {
+                        <td></td>
+                    }
+                    <td>Total Production</td>
+                    <td>@comp.FormattedTotalProduction</td>
+                }
+                <td> - </td>
+            </tr>
+            <tr>
+                @{ index = Model.CellsTotalAnnualProd - 1; }
+                @while (index-- != 0)
+                {
+                    <td></td>
+                }
+                <td><strong>Total Annual Production</strong></td>
+                <td>@Html.DisplayFor(model => model.TotalAnnualProduction)</td>
+            </tr>
+        </tbody>
+    </table>
+</div>

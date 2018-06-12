@@ -1,0 +1,211 @@
+﻿@model IMS.WebMvc.Models.ReportIndexModel
+
+<button type="button" class="btn btn-default" id="dowload-button" aria-label="Download" 
+        ng-click="download('marine-register-page1')">
+    <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+</button>
+
+<ul class="nav nav-pills">
+    <li class="active" ng-click="tabClick('marine-register-page1')">
+        <a data-toggle="pill" href="#marine-register-page1">Page 1</a>
+    </li>
+    <li ng-click="tabClick('marine-register-page2')">
+        <a data-toggle="pill" href="#marine-register-page2">Page 2</a>
+    </li>
+</ul>
+<div class="tab-content">
+    <div id="marine-register-page1" class="tab-pane active">
+        <table class="table report-table">
+            <thead>
+                <tr>
+                    <th colspan="19">@Model.PolicyTypeName.ToUpper() REGISTER @Model.Year - @Model.CompanyName.ToUpper()</th>
+                </tr>
+                <tr>
+                    <th rowspan="2">@Html.DisplayNameFor(m =>Model.InvoiceByMonthList[0].ReportList[0].PaidDate)</th>
+                    <th rowspan="2">@Html.DisplayNameFor(m =>Model.InvoiceByMonthList[0].ReportList[0].ClientName)</th>
+                    <th rowspan="2">@Html.DisplayNameFor(m =>Model.InvoiceByMonthList[0].ReportList[0].PolicyNumber)</th>
+                    <th rowspan="2">@Html.DisplayNameFor(m =>Model.InvoiceByMonthList[0].ReportList[0].AgentName)</th>
+                    <th rowspan="2">@Html.DisplayNameFor(m =>Model.InvoiceByMonthList[0].ReportList[0].EndorsementNumber)</th>
+                    <th colspan="2">PREMIUM</th>
+                    <th colspan="11">TAXES</th>
+                    <th rowspan="2">@Html.DisplayNameFor(m =>Model.InvoiceByMonthList[0].ReportList[0].GrandTotal)</th>
+                </tr>
+                <tr>
+                    <th>@Model.PolicyTypeName.ToUpper()</th>
+                    <th>@Html.DisplayNameFor(m =>Model.InvoiceByMonthList[0].ReportList[0].PremiumComponents.Total)</th>
+                    <th>@Html.DisplayNameFor(m => Model.InvoiceByMonthList[0].ReportList[0].TaxComponents.Dst)</th>
+                    <th>@Html.DisplayNameFor(m => Model.InvoiceByMonthList[0].ReportList[0].TaxComponents.Vat)</th>
+                    <th>@Html.DisplayNameFor(m => Model.InvoiceByMonthList[0].ReportList[0].TaxComponents.Lgt)</th>
+                    <th>@Html.DisplayNameFor(m => Model.InvoiceByMonthList[0].ReportList[0].TaxComponents.Fst)</th>
+                    <th>@Html.DisplayNameFor(m => Model.InvoiceByMonthList[0].ReportList[0].TaxComponents.Ax)</th>
+                    <th>@Html.DisplayNameFor(m => Model.InvoiceByMonthList[0].ReportList[0].TaxComponents.Rchar)</th>
+                    <th>@Html.DisplayNameFor(m => Model.InvoiceByMonthList[0].ReportList[0].TaxComponents.NotarialFee)</th>
+                    <th>@Html.DisplayNameFor(m => Model.InvoiceByMonthList[0].ReportList[0].TaxComponents.PremiumTax)</th>
+                    <th>@Html.DisplayNameFor(m => Model.InvoiceByMonthList[0].ReportList[0].TaxComponents.MunicipalTax)</th>
+                    <th>@Html.DisplayNameFor(m => Model.InvoiceByMonthList[0].ReportList[0].TaxComponents.OtherFees)</th>
+                    <th>@Html.DisplayNameFor(m =>Model.InvoiceByMonthList[0].ReportList[0].TaxComponents.Total)</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{ int index = 1;}
+                @foreach (var month in Model.Months)
+                {
+                    <tr>
+                        <td class="report-month-cell"><strong>@month @Model.Year</strong></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    foreach (var invoiceList in Model.InvoiceByMonthList)
+                    {
+                        if (invoiceList.Month != index)
+                        {
+                            continue;
+                        }
+                        foreach (var reportRow in invoiceList.ReportList)
+                        {
+                            <tr>
+                                <td>@reportRow.PaidDate.ToString("MM/dd/yyyy")</td>
+                                <td>@reportRow.ClientName</td>
+                                <td>@reportRow.PolicyNumber</td>
+                                <td>@reportRow.AgentName</td>
+                                <td>@reportRow.EndorsementNumber</td>
+                                <td>@reportRow.PremiumComponents.Total.ToString("N")</td>
+                                <td>@reportRow.PremiumComponents.Total.ToString("N")</td>
+                                <td>@reportRow.TaxComponents.Dst.ToString("N")</td>
+                                <td>@reportRow.TaxComponents.Vat.ToString("N")</td>
+                                <td>@reportRow.TaxComponents.Lgt.ToString("N")</td>
+                                <td>@reportRow.TaxComponents.Fst.ToString("N")</td>
+                                <td>@reportRow.TaxComponents.Ax.ToString("N")</td>
+                                <td>@reportRow.TaxComponents.Rchar.ToString("N")</td>
+                                <td>@reportRow.TaxComponents.NotarialFee.ToString("N")</td>
+                                <td>@reportRow.TaxComponents.PremiumTax.ToString("N")</td>
+                                <td>@reportRow.TaxComponents.MunicipalTax.ToString("N")</td>
+                                <td>@reportRow.TaxComponents.OtherFees.ToString("N")</td>
+                                <td>@reportRow.TaxComponents.Total.ToString("N")</td>
+                                <td>@reportRow.GrandTotal.ToString("N")</td>
+                            </tr>
+                        }
+                    }
+                    { index++; }
+                }
+                <tr>
+                    <td colspan="5" class="table-totals-right"><strong>TOTAL</strong></td>
+                    <td>@Html.DisplayFor(m => Model.ReportSums.SumPremiumTotal)</td>
+                    <td>@Html.DisplayFor(m => Model.ReportSums.SumPremiumTotal)</td>
+                    <td>@Html.DisplayFor(m => Model.ReportSums.SumTaxDst)</td>
+                    <td>@Html.DisplayFor(m => Model.ReportSums.SumTaxVat)</td>
+                    <td>@Html.DisplayFor(m => Model.ReportSums.SumTaxLgt)</td>
+                    <td>@Html.DisplayFor(m => Model.ReportSums.SumTaxFst)</td>
+                    <td>@Html.DisplayFor(m => Model.ReportSums.SumTaxAx)</td>
+                    <td>@Html.DisplayFor(m => Model.ReportSums.SumTaxRchar)</td>
+                    <td>@Html.DisplayFor(m => Model.ReportSums.SumTaxNotarialFee)</td>
+                    <td>@Html.DisplayFor(m => Model.ReportSums.SumTaxPremiumTax)</td>
+                    <td>@Html.DisplayFor(m => Model.ReportSums.SumTaxMunicipalTax)</td>
+                    <td>@Html.DisplayFor(m => Model.ReportSums.SumTaxOtherFees)</td>
+                    <td>@Html.DisplayFor(m => Model.ReportSums.SumTaxTotal)</td>
+                    <td>@Html.DisplayFor(m => Model.ReportSums.SumGrandTotal)</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div id="marine-register-page2" class="tab-pane">
+        <table class="table report-table">
+            <thead>
+                <tr>
+                    <th colspan="15">@Model.PolicyTypeName.ToUpper() REGISTER @Model.Year - @Model.CompanyName.ToUpper()</th>
+                </tr>
+                <tr>
+                    <th rowspan="2">@Html.DisplayNameFor(m =>Model.InvoiceByMonthList[0].ReportList[0].PolicyNumber)</th>
+                    <th rowspan="2">@Html.DisplayNameFor(m =>Model.InvoiceByMonthList[0].ReportList[0].AgentName)</th>
+                    <th rowspan="2">@Html.DisplayNameFor(m =>Model.InvoiceByMonthList[0].ReportList[0].ClientName)</th>
+                    <th colspan="2">PREMIUM</th>
+                    <th rowspan="2">@Html.DisplayNameFor(m =>Model.InvoiceByMonthList[0].ReportList[0].GrandTotal)</th>
+                    <th colspan="5">PAYMENT</th>
+                    <th colspan="4">COMMISSION RECEIVED</th>
+                </tr>
+                <tr>
+                    <th>@Model.PolicyTypeName.ToUpper()</th>
+                    <th>@Html.DisplayNameFor(m =>Model.InvoiceByMonthList[0].ReportList[0].PremiumComponents.Total)</th>
+                    <th>@Html.DisplayNameFor(m =>Model.InvoiceByMonthList[0].ReportList[0].PaymentComponents.AmountPaid)</th>
+                    <th>@Html.DisplayNameFor(m =>Model.InvoiceByMonthList[0].ReportList[0].PaymentComponents.PrepaidTaxEwt)</th>
+                    <th>@Html.DisplayNameFor(m =>Model.InvoiceByMonthList[0].ReportList[0].PaymentComponents.Difference)</th>
+                    <th>@Html.DisplayNameFor(m =>Model.InvoiceByMonthList[0].ReportList[0].PaymentComponents.PaidDate)</th>
+                    <th>@Html.DisplayNameFor(m =>Model.InvoiceByMonthList[0].ReportList[0].PaymentComponents.OfficialReceiptNumber)</th>
+                    <th>@Model.PolicyTypeName</th>
+                    <th>@Html.DisplayNameFor(m =>Model.InvoiceByMonthList[0].ReportList[0].CommissionComponents.TotalCommission)</th>
+                    <th>@Html.DisplayNameFor(m =>Model.InvoiceByMonthList[0].ReportList[0].CommissionComponents.ReceivedDate)</th>
+                    <th>@Html.DisplayNameFor(m =>Model.InvoiceByMonthList[0].ReportList[0].CommissionComponents.OfficialReceiptNumber)</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{ index = 1;}
+                @foreach (var month in Model.Months)
+                {
+                    <tr>
+                        <td class="report-month-cell"><strong>@month @Model.Year</strong></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    foreach (var invoiceList in Model.InvoiceByMonthList)
+                    {
+                        if (invoiceList.Month != index)
+                        {
+                            continue;
+                        }
+                        foreach (var reportRow in invoiceList.ReportList)
+                        {
+                            <tr>
+                                <td>@reportRow.PolicyNumber</td>
+                                <td>@reportRow.AgentName</td>
+                                <td>@reportRow.ClientName</td>
+                                <td>@reportRow.PremiumComponents.Total.ToString("N")</td>
+                                <td>@reportRow.PremiumComponents.Total.ToString("N")</td>
+                                <td>@reportRow.GrandTotal.ToString("N")</td>
+                                <td>@reportRow.PaymentComponents.AmountPaid.ToString("N")</td>
+                                <td>@reportRow.PaymentComponents.PrepaidTaxEwt.ToString("N")</td>
+                                <td>@reportRow.PaymentComponents.Difference.ToString("N")</td>
+                                <td>@reportRow.PaymentComponents.PaidDate.ToString("MM/dd/yyyy")</td>
+                                <td>@reportRow.PaymentComponents.OfficialReceiptNumber</td>
+                                @*<td>@reportRow.CommissionComponents.Marine.ToString("N")</td>*@
+                                <td></td>
+                                <td>@reportRow.CommissionComponents.TotalCommission.ToString("N")</td>
+                                <td>@reportRow.CommissionComponents.ReceivedDate</td>
+                                <td>@reportRow.CommissionComponents.OfficialReceiptNumber</td>
+                            </tr>
+                        }
+                    }
+                    { index++; }
+
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

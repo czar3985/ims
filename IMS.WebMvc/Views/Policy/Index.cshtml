@@ -1,0 +1,125 @@
+﻿@model IEnumerable<IMS.WebMvc.Models.PolicyGroupedViewModel>
+@{
+    ViewBag.Title = "Policies";
+}
+
+<div id="policy-index-html" ng-controller="policiesIndexCtrl">
+    <div class="row page-action-top">
+        <div class="col-sm-6 left-pane">
+            <label class="control-label">Show:</label>
+            <select ng-model="showEntriesVal" ng-change="showEntriesChanged()">
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+            </select>
+            <label  class="control-label">entries</label>
+            <a href='@Url.Action("Create", "Policy", new { ClientId = 0 })' class="btn btn-primary btn-sm">
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                <span class="add-btn-label">Policy</span>
+            </a>
+        </div>
+        <div class="col-sm-6 right-pane">
+            <button type="button" class="btn btn-default btn-xs" id="dowload-button" aria-label="Download" ng-click="download()">
+                <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+            </button>
+            <input type="search" ng-model="searchText" ng-change="searchChanged()" placeholder="Search..."/>
+        </div>
+    </div>
+
+    <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
+        @{
+            var addClass = "active";
+            var idx = 0;
+
+            foreach (var item in Model)
+            {
+                <li class="@addClass" ng-click="tabClick('company-@idx')">
+                    <a href="#company-@idx" data-toggle="tab">@item.CompanyName</a>
+                </li>
+
+                if (!string.IsNullOrEmpty(addClass))
+                {
+                    addClass = "";
+                }
+
+                idx++;
+            }
+        }
+    </ul>
+
+    <div class="tab-content">
+        @{
+            addClass = "active";
+            idx = 0;
+
+            foreach (var item in Model)
+            {
+                <div class="tab-pane @addClass" id="company-@idx">
+                    <table class="table data-table">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Company</th>
+                                <th>Insured</th>
+                                <th>Type</th>
+                                <th>Sum Insured</th>
+                                <th>Premium</th>
+                                <th>Expiry Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var policy in item.PolicyViewModelList)
+                    {
+                                <tr>
+                                    <td>@Html.DisplayFor(modelItem => policy.PolicyNumber)</td>
+                                    <td>@Html.DisplayFor(modelItem => policy.CompanyName)</td>
+                                    <td>@Html.DisplayFor(modelItem => policy.ClientName)</td>
+                                    <td>@Html.DisplayFor(modelItem => policy.PolicyTypeName)</td>
+                                    <td class="number">@Html.DisplayFor(modelItem => policy.SumInsured)</td>
+                                    <td>@Html.DisplayFor(modelItem => policy.Premium)</td>
+                                    <td>
+                                        @policy.ExpiryDate.ToString("MM/dd/yyyy")
+                                    </td>
+                                    <td>@Html.DisplayFor(modelItem => policy.StatusName)</td>
+                                    <td>
+                                        @if (policy.StatusName.ToLower() == "active")
+                                        {
+                                            <a href='@Url.Action("Edit", "Policy", new { id = policy.Id })'
+                                               class="btn btn-default btn-xs" title="Edit">
+                                                <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <button class="btn btn-default btn-xs" title="Edit" disabled>
+                                                <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                                            </button>
+                                        }
+                                        <a href='@Url.Action("Details", "Policy",new { id = policy.Id })'
+                                           class="btn btn-default btn-xs" title="Details">
+                                            <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                if (!string.IsNullOrEmpty(addClass))
+                {
+                    addClass = "";
+                }
+
+                idx++;
+            }
+        }
+    </div>
+</div>
+
+@section scripts {
+    <script src="~/Scripts/app/policies/policiesIndexCtrl.js"></script>
+}

@@ -1,0 +1,97 @@
+﻿@model IMS.WebMvc.Models.ClaimItemViewModel
+@{
+    ViewBag.Title = "Details";
+}
+
+<div class="container details-box form-horizontal">
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group">
+                @Html.LabelFor(m => Model.ClientId, new { @class = "col-xs-4 control-label" })
+                <div class="col-xs-8 detail-value">@Model.ClientName</div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="form-group">
+                @Html.LabelFor(m => Model.StatusId, new { @class = "col-xs-4 control-label" })
+                <div class="col-xs-8 detail-value">@Model.StatusName</div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group">
+                @Html.LabelFor(m => Model.PolicyNumber, new { @class = "col-xs-4 control-label" })
+                <div class="col-xs-8 detail-value">@Model.PolicyNumber</div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="form-group">
+                @Html.LabelFor(m => Model.ClaimDate, new { @class = "col-xs-4 control-label" })
+                <div class="col-xs-8 detail-value">@Model.ClaimDate.ToString("MM/dd/yyyy")</div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group">
+                @Html.LabelFor(m => Model.CompanyName, new { @class = "col-xs-4 control-label" })
+                <div class="col-xs-8 detail-value">@Model.CompanyName</div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="form-group">
+                @Html.LabelFor(m => Model.ExpiryDate, new { @class = "col-xs-4 control-label" })
+                <div class="col-xs-8 detail-value">@Model.ExpiryDate.ToString("MM/dd/yyyy")</div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group">
+                @Html.LabelFor(m => Model.PolicyTypeName, new { @class = "col-xs-4 control-label" })
+                <div class="col-xs-8 detail-value">@Model.PolicyTypeName</div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="form-group">
+                @Html.LabelFor(m => Model.ClaimNumber, new { @class = "col-xs-4 control-label" })
+                <div class="col-xs-8 detail-value">@Model.ClaimNumber</div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group">
+                @Html.LabelFor(m => Model.SumInsured, new { @class = "col-xs-4 control-label" })
+                <div class="col-xs-8 detail-value">
+                    @string.Format("{0:N}", Model.SumInsured)
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="form-group">
+                @Html.LabelFor(m => Model.ClaimAmount, new { @class = "col-xs-4 control-label" })
+                <div class="col-xs-8 detail-value">
+                    @string.Format("{0:N}", Model.ClaimAmount)
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group">
+                @Html.LabelFor(m => Model.Remarks, new { @class = "col-xs-4 control-label" })
+                <div class="col-xs-8 detail-value">@Model.Remarks</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            $("#menu-claim").addClass('active');
+        });
+    </script>
+}

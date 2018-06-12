@@ -1,0 +1,124 @@
+﻿@model IMS.WebMvc.Models.ClientModel
+
+<div class="modal fade" id="addClientFromPolicyModal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Add Client</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" name="formClient" ng-submit="submitClient(formClient)">
+                    @*<div class="form-group">
+                        <label for="AccountNumber" class="col-md-4 control-label">Account Number:</label>
+                        <div class="col-md-8">
+                            @Html.TextBoxFor(m => Model.AccountNumber, new { @class = "form-control", ng_model = "clientVm.AccountNumber" })
+                            @Html.ValidationMessageFor(model => model.AccountNumber, "", new { @class = "text-danger" })
+                        </div>
+                    </div>*@
+                    <div class="form-group">
+                        <label class="col-md-4 control-label">The insured is an:</label>
+                        <div class="col-md-8">
+                            <label>
+                                <input type="radio" name="IsOrganization" ng-model="clientVm.IsOrganization" value="false"
+                                       ng-value="false" ng-checked="true"> Individual
+                            </label>
+                            <br />
+                            <label>
+                                <input type="radio" name="IsOrganization" ng-model="clientVm.IsOrganization" value="true"
+                                       ng-value="true"> Organization or company
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="LastName" class="col-md-4 control-label">Last Name:</label>
+                        <div class="col-md-8">
+                            @Html.TextBoxFor(m => Model.LastName, new
+                       {
+                           @class = "form-control",
+                           ng_required = "clientVm.IsOrganization == false",
+                           ng_model = "clientVm.LastName"
+                       })
+                            @Html.ValidationMessageFor(model => model.LastName, "",
+                           new { @class = "text-danger", ng_if = "clientVm.IsOrganization == false" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="FirstName" class="col-md-4 control-label">First Name:</label>
+                        <div class="col-md-8">
+                            @Html.TextBoxFor(m => Model.FirstName, new
+                       {
+                           @class = "form-control",
+                           ng_required = "clientVm.IsOrganization == false",
+                           ng_model = "clientVm.FirstName"
+                       })
+                            @Html.ValidationMessageFor(model => model.FirstName, "",
+                           new { @class = "text-danger", ng_if = "clientVm.IsOrganization == false" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="OrganizationName" class="col-md-4 control-label">Organization Name:</label>
+                        <div class="col-md-8">
+                            @Html.TextBoxFor(m => Model.OrganizationName, new
+                       {
+                           @class = "form-control",
+                           placeholder = "Required if insured is a company",
+                           ng_required = "clientVm.IsOrganization == true",
+                           ng_model = "clientVm.OrganizationName"
+                       })
+                            @Html.ValidationMessageFor(model => model.OrganizationName, "",
+                           new { @class = "text-danger", ng_if = "clientVm.IsOrganization == true" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="Address" class="col-md-4 control-label">Address:</label>
+                        <div class="col-md-8">
+                            @Html.TextBoxFor(m => Model.Address, new
+                       {
+                           @class = "form-control",
+                           placeholder = "Mailing Address",
+                           ng_model = "clientVm.Address"
+                       })
+                            @Html.ValidationMessageFor(model => model.Address, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="ContactNumber" class="col-md-4 control-label">Contact Number:</label>
+                        <div class="col-md-8">
+                            @Html.TextBoxFor(m => Model.ContactNumber, new { @class = "form-control", ng_model="clientVm.ContactNumber" })
+                            @Html.ValidationMessageFor(model => model.ContactNumber, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="Email" class="col-md-4 control-label">E-mail:</label>
+                        <div class="col-md-8">
+                            @Html.TextBoxFor(m => Model.Email, new { @class = "form-control", ng_model="clientVm.Email" })
+                            @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="Remarks" class="col-md-4 control-label">Remarks:</label>
+                        <div class="col-md-8">
+                            <textarea id="Remarks" name="Remarks" class="form-control" rows="5" ng-model="clientVm.Remarks"></textarea>
+                        </div>
+                    </div>
+                    @*@if (User.IsInRole("Admin"))
+                    {
+                        <div class="form-group">
+                            <label for="Rebate" class="col-md-4 control-label">Rebate:</label>
+                            <div class="col-md-8">
+                                @Html.TextBoxFor(m => Model.Rebate, new { @class = "form-control", ng_model="clientVm.Rebate" })
+                                @Html.ValidationMessageFor(model => model.Rebate, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    }*@
+                    <div class="form-bottom-action">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-success">Ok</button>
+                    </div>
+                    @*<input type="hidden" name="ReturnUrl" value="{{clientReturnUrl}}" />*@
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

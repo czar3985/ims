@@ -1,0 +1,12 @@
+﻿@model IMS.WebMvc.Models.PolicyDetailModel
+
+@{
+    ViewBag.Title = "Create";
+}
+
+@Html.Partial("~/Views/Policy/_CreateEdit.cshtml", Model)
+
+@section scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script src="~/Scripts/app/policies/policiesCreateCtrl.js"></script>
+}

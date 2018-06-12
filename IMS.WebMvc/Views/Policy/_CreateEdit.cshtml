@@ -1,0 +1,337 @@
+﻿@using Newtonsoft.Json;
+@model IMS.WebMvc.Models.PolicyDetailModel
+
+<div ng-controller="policiesCreateCtrl" ng-init="ctrlInit(@JsonConvert.SerializeObject(@Model))">
+
+    @Html.Partial("_AddCompanyAgentType")
+    @Html.Partial("_AddClient", new IMS.WebMvc.Models.ClientModel())
+
+    <form name="form" ng-submit="submit(form)">
+        <div class="form-horizontal row">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="col-sm-6">
+                <div class="form-group">
+                    @Html.LabelFor(m => Model.PolicyNumber, new { @class = "col-sm-3 control-label" })
+                    <div class="col-sm-9">
+                        @Html.TextBoxFor(m => Model.PolicyNumber, new
+                   {
+                       @class = "form-control",
+                       placeholder = "Ex. PN6879043",
+                       ng_model = "policyVm.PolicyNumber",
+                       required = "required"
+                   })
+                        @Html.ValidationMessageFor(m => Model.PolicyNumber, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(m => Model.InsuranceProviderId, new { @class = "col-sm-3 control-label" })
+                    <div class="col-sm-9">
+                        <div class="input-group">
+                            <select name="InsuranceProviderId" class="form-control" ng-model="policyVm.InsuranceProviderId" ng-change="companyChanged()" required
+                                    ng-options="item.Id as item.Name for item in insuranceProviders"></select>
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-default" aria-label="Add Company" data-toggle="modal" data-target="#add-company-modal">
+                                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                                </button>
+                            </span>
+                        </div>
+                    </div>
+                    @Html.ValidationMessageFor(m => Model.InsuranceProviderId, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(m => Model.PolicyTypeId, new { @class = "col-sm-3 control-label" })
+                    <div class="col-sm-9">
+                        <div class="input-group">
+                            <select name="PolicyTypeId" class="form-control" ng-model="policyVm.PolicyTypeId" ng-change="policyTypeChanged()" required
+                                    ng-options="item.Id as item.Name for item in policyTypes"></select>
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-default" aria-label="Add Policy Type" data-toggle="modal" data-target="#add-policy-type-modal">
+                                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                                </button>
+                            </span>
+                        </div>
+                    </div>
+                    @Html.ValidationMessageFor(m => Model.PolicyTypeId, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(m => Model.ClientId, new { @class = "col-sm-3 control-label" })
+                    <div class="col-sm-9">
+
+                        @if (Model.ClientId == 0)
+                        {
+                            <div class="input-group">
+                                <select name="ClientId" class="form-control" ng-model="policyVm.ClientId" required
+                                        ng-options="item.Id as item.ClientName for item in clients"></select>
+                                <span class="input-group-btn">
+                                    <button type="button" class="btn btn-default" aria-label="Add Client" data-toggle="modal"
+                                            data-target="#addClientFromPolicyModal">
+                                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                                    </button>
+                                </span>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="input-group">
+                                <select name="ClientId" class="form-control" ng-model="policyVm.ClientId" disabled required
+                                        ng-options="item.Id as item.ClientName for item in clients"></select>
+                                <span class="input-group-btn">
+                                    <button type="button" class="btn btn-default" aria-label="Add Client" data-toggle="modal"
+                                            data-target="#addClientFromPolicyModal" disabled>
+                                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                                    </button>
+                                </span>
+                            </div>
+                        }
+                    </div>
+                    @Html.ValidationMessageFor(m => Model.ClientId, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.SumInsured, htmlAttributes: new { @class = "control-label col-sm-3" })
+                    <div class="col-sm-9 format-input-number readonly-number">
+                        <input id="SumInsured" name="SumInsured" type="number" class="form-control number" ng-model="sumInsured"
+                               data-val="true" data-val-required="The Sum Insured field is required. Check that Risks are > 0."
+                               min="0.01" max="1.79769313486232E+308" required readonly />
+                        <label for="SumInsured">{{sumInsured | number:2}}</label>
+                        @Html.ValidationMessageFor(m => Model.SumInsured, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                @if (User.IsInRole("Admin"))
+                {
+                    <div class="form-group">
+                        @Html.LabelFor(m => Model.Rebate, new { @class = "col-sm-3 control-label" })
+                        <div class="col-sm-9 format-input-number">
+                            @Html.TextBoxFor(m => Model.Rebate, new
+                       {
+                           @class = "form-control number",
+                           id = "Rebate",
+                           ng_model = "policyVm.Rebate",
+                           required = "required"
+                       })
+                            <label for="Rebate">{{policyVm.Rebate | number:6}}</label>
+                            @Html.ValidationMessageFor(m => Model.Rebate, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                }
+
+                <div class="form-group">
+                    @Html.LabelFor(m => Model.Address, new { @class = "col-sm-3 control-label" })
+                    <div class="col-sm-9">
+                        @Html.TextBoxFor(m => Model.Address, new { @class = "form-control", ng_model = "policyVm.Address" })
+                        @Html.ValidationMessageFor(m => Model.Address, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(m => Model.Remarks, new { @class = "col-sm-3 control-label" })
+                    <div class="col-sm-9">
+                        @*@Html.TextBoxFor(m => Model.Remarks, new { @class = "form-control", ng_model = "policyVm.Remarks" })*@
+                        <textarea id="Remarks" name="Remarks" class="form-control" rows="5" ng-model="policyVm.Remarks"></textarea>
+                        @Html.ValidationMessageFor(m => Model.Remarks, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-6">
+                <div class="form-group">
+                    @Html.LabelFor(m => Model.StatusId, new { @class = "col-sm-3 control-label" })
+                    <div class="col-sm-9">
+                        <input name="StatusName" type="text" value="@Model.StatusName" class="form-control" readonly />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(m => Model.InceptionDate, new { @class = "col-sm-3 control-label " })
+                    <div class="col-sm-9">
+                        <input name="DateIssued" type="text" class="form-control datepicker datepicker-dropdown"
+                               ng-model="policyVm.InceptionDate" data-val="true" value='@Model.InceptionDate.ToString("MM/dd/yyyy")'
+                               data-val-required="InceptionDate Date field is required" datetime="MM/dd/yyyy" required />
+                        @Html.ValidationMessageFor(m => Model.InceptionDate, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(m => Model.DateIssued, new { @class = "col-sm-3 control-label " })
+                    <div class="col-sm-9">
+                        <input name="DateIssued" type="text" class="form-control datepicker datepicker-dropdown"
+                               ng-model="policyVm.DateIssued" data-val="true" value='@Model.DateIssued.ToString("MM/dd/yyyy")'
+                               data-val-required="Date Issued field is required" datetime="MM/dd/yyyy" required />
+                        @Html.ValidationMessageFor(m => Model.DateIssued, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(m => Model.ExpiryDate, new { @class = "col-sm-3 control-label " })
+                    <div class="col-sm-9">
+                        <input name="ExpiryDate" type="text" class="form-control datepicker datepicker-dropdown"
+                               ng-model="policyVm.ExpiryDate" data-val="true" value='@Model.ExpiryDate.ToString("MM/dd/yyyy")'
+                               data-val-required="Expiry Date field is required" datetime="MM/dd/yyyy" required />
+                        @Html.ValidationMessageFor(m => Model.ExpiryDate, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(m => Model.RenewalPolicyNumber, new { @class = "col-sm-3 control-label" })
+                    <div class="col-sm-9">
+                        @Html.TextBoxFor(m => Model.RenewalPolicyNumber, new { @class = "form-control", ng_model = "policyVm.RenewalPolicyNumber" })
+                        @Html.ValidationMessageFor(m => Model.RenewalPolicyNumber, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(m => Model.Premium, new { @class = "col-sm-3 control-label" })
+                    <div class="col-sm-9 format-input-number">
+                        @*<input id="Premium" name="Premium" type="number" class="form-control number" ng-model="policyVm.Premium" data-val="true"
+                                   data-val-required="The Premium field is required." min="0.01" max="1.79769313486232E+308" required />
+                            <label for="Premium">{{policyVm.Premium | number:2}}</label>
+                            @Html.ValidationMessageFor(m => Model.Premium, "", new { @class = "text-danger" })*@
+                        <input id="Premium" name="Premium" type="number" class="form-control number" ng-model="policyVm.Premium" 
+                                data-val="true" data-val-required="The Sum Insured field is required. Check that Risks are > 0."
+                                min="0.01" max="1.79769313486232E+308" required readonly/>
+                        <label for="Premium" class="readonly-label">{{policyVm.Premium | number:2}}</label>
+                        @Html.ValidationMessageFor(m => Model.Premium, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(m => Model.Rate, new { @class = "col-sm-3 control-label" })
+                    <div class="col-sm-9 format-input-number">
+                        <input name="Rate" type="text" value="@Model.Rate" class="form-control" readonly />
+                        @*@Html.TextBoxFor(m => Model.Rate, new
+                            {
+                                @class = "form-control number",
+                                id = "Rate",
+                                ng_model = "policyVm.Rate",
+                                required = "required"
+                            })*@
+                        <label for="Rate" class="readonly-label">{{policyVm.Rate | number:6}}</label>
+                        @Html.ValidationMessageFor(m => Model.Rate, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(m => Model.AgentId, new { @class = "col-sm-3 control-label" })
+                    <div class="col-sm-9">
+                        <div class="input-group">
+                            <select id="agent" name="AgentId" class="form-control" ng-model="policyVm.AgentId" required
+                                    ng-options="item.Id as item.Name for item in agents"></select>
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-default" aria-label="Add Agent" data-toggle="modal" data-target="#add-agent-modal">
+                                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                                </button>
+                            </span>
+                        </div>
+                    </div>
+                    @Html.ValidationMessageFor(m => Model.AgentId, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+        <table class="table table-with-input">
+            <thead>
+                <tr><th colspan="5">Risks</th></tr>
+                <tr>
+                    <th>No.</th>
+                    <th>Amount Insured</th>
+                    <th>Rate</th>
+                    <th>Premium</th>
+                    <th>Address</th>
+                    <th>Remarks</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="item in rList">
+                    <td class="number">
+                        <input type="text" value="{{$index + 1}}" class="form-control" size="2" readonly />
+                    </td>
+                    <td class="number">
+                        <div class="format-input-number-right">
+                            <input name="AmountInsured_{{$index + 1}}" id="AmountInsured_{{$index + 1}}" type="number"
+                                   class="form-control" ng-model="item.AmountInsured" ng-change="amountChanged()"
+                                   min="0.01" max="1.79769313486232E+308" />
+                            <label for="AmountInsured_{{$index + 1}}">{{item.AmountInsured | number:2}}</label>
+                            <span class="text-danger field-validation-error" data-valmsg-for="AmountInsured_{{$index + 1}}"
+                                  data-valmsg-replace="true">
+                            </span>
+                        </div>
+                    </td>
+                    <td class="number">
+                        <div class="format-input-number-right">
+                            <input name="Rate_{{$index + 1}}" id="Rate_{{$index + 1}}" type="number"
+                                   class="form-control" ng-model="item.Rate" min="0.00" max="1.00" ng-change="riskItemChanged()" />
+                            <label for="Rate_{{$index + 1}}">{{item.Rate| number:6}}</label>
+                            <span class="text-danger field-validation-error" data-valmsg-for="Rate_{{$index + 1}}"
+                                  data-valmsg-replace="true">
+                            </span>
+                        </div>
+                    </td>
+                    <td class="number">
+                        <div class="format-input-number-right">
+                            <input name="Premium_{{$index + 1}}" id="Premium_{{$index + 1}}" type="number"
+                                   class="form-control" ng-model="item.Premium" ng-change="premiumChanged()"
+                                   min="0.01" max="1.79769313486232E+308" />
+                            <label for="Premium_{{$index + 1}}">{{item.Premium | number:2}}</label>
+                            <span class="text-danger field-validation-error" data-valmsg-for="Premium_{{$index + 1}}"
+                                  data-valmsg-replace="true">
+                            </span>
+                        </div>
+                    </td>
+                    <td>
+                        <input type="text" class="form-control" ng-model="item.Address" />
+                    </td>
+                    <td><input type="text" class="form-control" ng-model="item.Remarks" /></td>
+                    <td>
+                        <button class="btn btn-default" type="button" title="Delete" ng-click="removeRisk($index)">
+                            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <button class="btn btn-default" type="button" title="Add Row" ng-click="addRisk()">
+                            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                        </button>
+                    </td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="row">
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.SumInsured, htmlAttributes: new { @class = "control-label col-sm-offset-6 col-sm-2" })
+                <div class="col-sm-3 format-input-number readonly-number">
+                    <input id="SumInsuredTable" type="text" class="form-control number" ng-model="sumInsured" readonly />
+                    <label for="SumInsuredTable">{{sumInsured | number:2}}</label>
+                </div>
+            </div>
+        </div>
+        <hr />
+        <div class="form-bottom-action row">
+            @if (!string.IsNullOrEmpty(Model.ReturnUrl))
+            {
+                <a href="@Model.ReturnUrl" class="btn btn-default">Cancel</a>
+            }
+            else
+            {
+                @Html.ActionLink("Cancel", "Index", "Policy", null, new { @class = "btn btn-default" })
+            }
+            @if (Model.StatusName.ToLower() == "new")
+            {
+                <input type="submit" value="Submit" class="btn btn-success" />
+            }
+            else
+            {
+                <input type="submit" value="Save Changes" class="btn btn-success" />
+            }
+        </div>
+    </form>
+</div>
